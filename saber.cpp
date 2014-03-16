@@ -265,6 +265,8 @@ void SaberModel::draw()
 	// projection matrix, don't bother with this ...
 	ModelerView::draw();
 
+	RotateRightUpperArm(VAL(SLASH), 0, 0);
+	RotateRightLowerArm(2 * VAL(SLASH), 0, 0);
 
 	treeRoot->Render();
 	
@@ -281,6 +283,7 @@ int main()
 	controls[ZPOS] = ModelerControl("Z Position", -5, 5, 0.1f, 0);
 	controls[HEIGHT] = ModelerControl("Height", 1, 2.5, 0.1f, 1);
 	controls[ROTATE] = ModelerControl("Rotate", -135, 135, 1, 0);
+	controls[SLASH] = ModelerControl("Slash", 0, 90, 1, 0);
 
 	ModelerApplication::Instance()->Init(&createSaberModel, controls, NUMCONTROLS);
 	return ModelerApplication::Instance()->Run();
