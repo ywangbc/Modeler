@@ -36,6 +36,9 @@
     <ClCompile Include="saber.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="sabermodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bitmap.h">
@@ -63,6 +66,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vec.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sabermodel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
