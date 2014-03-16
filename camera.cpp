@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <Fl/gl.h>
 #include <gl/glu.h>
+#include <cmath>
 
 #include "camera.h"
 
@@ -178,9 +179,91 @@ void Camera::applyViewingTransform() {
 
 	// Place the camera at mPosition, aim the camera at
 	// mLookAt, and twist the camera such that mUpVector is up
+	/*
 	gluLookAt(	mPosition[0], mPosition[1], mPosition[2],
 				mLookAt[0],   mLookAt[1],   mLookAt[2],
 				mUpVector[0], mUpVector[1], mUpVector[2]);
+				*/
+
+	lookAt(mPosition, mLookAt, mUpVector);
+}
+
+void Camera::lookAt(Vec3f eye, Vec3f at, Vec3f up)
+{
+
+	Vec3f F;
+	for (int i = 0; i < 3; i++)
+	{
+		F[i] = at[i] - eye[i];
+	}
+	Vec3f f = vectNorm(F);
+
+	Vec3f up1 = vectNorm(up);
+
+	Vec3f S = vectCross(f, up1);
+	Vec3f s = vectNorm(S);
+
+	printf("S %f %f %f\n", &S[0], &S[1], &S[2]);
+	printf("S %f %f %f\n", &s[0], &s[1], &s[2]);
+
+	Vec3f u = vectCross(s, f);
+
+	GLfloat* matrix = new float[16];
+	/*
+	matrix[0] = s[0];
+	matrix[1] = s[1];
+	matrix[2] = s[2];
+	matrix[3] = 0;
+	matrix[4] = u[0];
+	matrix[5] = u[1];
+	matrix[6] = u[2];
+	matrix[7] = 0;
+	matrix[8] = -f[0];
+	matrix[9] = -f[1];
+	matrix[10] = -f[2];
+	matrix[11] = 0;
+	*/
+
+	for (int i = 0; i < 3; i++)
+	{
+		matrix[i * 4 + 0] = s[i];
+		matrix[i * 4 + 1] = u[i];
+		matrix[i * 4 + 2] = -f[i];
+		matrix[i * 4 + 3] = 0;
+	}
+
+
+	matrix[12] = 0;
+	matrix[13] = 0;
+	matrix[14] = 0;
+	matrix[15] = 1;
+
+	glMultMatrixf(matrix);
+	glTranslated(-eye[0], -eye[1], -eye[2]);
+}
+
+Vec3f Camera::vectNorm(Vec3f vect)
+{
+	double lengthSqr = vect[0] * vect[0] + vect[1] * vect[1] + vect[2] * vect[2];
+	double length = sqrt(lengthSqr);
+
+	Vec3f vectNew;
+
+	vectNew[0] = vect[0] / length;
+	vectNew[1] = vect[1] / length;
+	vectNew[2] = vect[2] / length;
+
+	return vectNew;
+}
+
+Vec3f Camera::vectCross(Vec3f a, Vec3f b)
+{
+	Vec3f c;
+	c[0] = a[1] * b[2] - a[2] * b[1];
+	c[1] = -(a[0] * b[2] - a[2] * b[0]);
+	c[2] = a[0] * b[1] - a[1] * b[0];
+
+	return c;
 }
 
 #pragma warning(pop)
