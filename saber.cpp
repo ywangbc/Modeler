@@ -119,8 +119,9 @@ public:
 		  leftLowerArm(&leftUpperArm, PRIMITIVE_BOX),
 		  rightUpperArm(&upperTorso, PRIMITIVE_BOX),
 		  rightLowerArm(&rightUpperArm, PRIMITIVE_BOX),
-		  excaliburHandle(&rightLowerArm, PRIMITIVE_BOX),
-		  excaliburBlade(&excaliburHandle, PRIMITIVE_BOX),
+		  excaliburGrip(&rightLowerArm, PRIMITIVE_BOX),
+		  excaliburGuard(&excaliburGrip, PRIMITIVE_BOX),
+		  excaliburBlade(&excaliburGuard, PRIMITIVE_BOX),
 		  head(&upperTorso, PRIMITIVE_BOX),
 		  leftUpperLeg(&upperTorso, PRIMITIVE_BOX),
 		  leftLowerLeg(&leftUpperLeg, PRIMITIVE_BOX),
@@ -139,7 +140,7 @@ public:
 private:
 	ModelNode *treeRoot;
 	ModelNode upperTorso, lowerTorso, leftUpperArm, leftLowerArm, rightUpperArm, rightLowerArm;
-	ModelNode excaliburHandle, excaliburBlade, head, leftUpperLeg, leftLowerLeg, rightUpperLeg, rightLowerLeg;
+	ModelNode excaliburGrip, excaliburGuard, excaliburBlade, head, leftUpperLeg, leftLowerLeg, rightUpperLeg, rightLowerLeg;
 };
 
 // We need to make a creator function, mostly because of
@@ -189,17 +190,23 @@ void SaberModel::InitializeTree(){
 	rightLowerArm.setStartPos(0.0,-2.2,0.0);
 	rightLowerArm.setTrans(-0.5,0.0,-0.5);
 
-	excaliburHandle.setAngle(0.0, 0.0, 0.0);
-	excaliburHandle.setColor(0.0f, 1.0f, 1.0f);
-	excaliburHandle.setScale(2.0, 0.5, 0.2);
-	excaliburHandle.setStartPos(0.0,-2.25,0.0);
-	excaliburHandle.setTrans(-1.0,-0.25,-0.1);
+	excaliburGuard.setAngle(0.0, 0.0, 0.0);
+	excaliburGuard.setColor(0.0f, 1.0f, 1.0f);
+	excaliburGuard.setScale(2.0, 0.5, 0.2);
+	excaliburGuard.setStartPos(0.0,-0.25,0.0);
+	excaliburGuard.setTrans(-1.0,-0.25,-0.1);
 
 	excaliburBlade.setAngle(0.0, 0.0, 0.0);
 	excaliburBlade.setColor(1.0f, 1.0f, 1.0f);
-	excaliburBlade.setScale(1.0, -3.0, 0.2);
+	excaliburBlade.setScale(1.0, -3.0, 0.1);
 	excaliburBlade.setStartPos(0.0,-0.25,0.0);
-	excaliburBlade.setTrans(-0.5,0.0,-0.1);
+	excaliburBlade.setTrans(-0.5,0.0,-0.05);
+
+	excaliburGrip.setAngle(0.0, 0.0, 0.0);
+	excaliburGrip.setColor(0.5f, 0.5f, 0.3f);
+	excaliburGrip.setScale(0.3, 0.8, 0.3);
+	excaliburGrip.setStartPos(0.0, -2.0, 0.0);
+	excaliburGrip.setTrans(-0.15, 0.0, -0.15);
 
 	head.setAngle(0.0, 0.0, 0.0);
 	head.setColor(0.0f, 1.0f, 1.0f);
@@ -246,7 +253,7 @@ void SaberModel::RotateRightLowerArm(GLdouble X, GLdouble Y, GLdouble Z){
 }
 
 void SaberModel::RotateExcalibur(GLdouble X, GLdouble Y, GLdouble Z){
-	excaliburHandle.setAngle(X, Y, Z);
+	excaliburGrip.setAngle(X, Y, Z);
 }
 
 // We are going to override (is that the right word?) the draw()
@@ -258,11 +265,6 @@ void SaberModel::draw()
 	// projection matrix, don't bother with this ...
 	ModelerView::draw();
 
-	/*
-	RotateLeftUpperArm(90, 0, 0);
-	RotateExcalibur(0, 90, 0);
-	RotateRightUpperArm(90, 0, 0);
-	*/
 
 	treeRoot->Render();
 	
