@@ -4,30 +4,47 @@
 #include "modelerapp.h"
 #include "modelerdraw.h"
 #include <FL/gl.h>
+#include <GL/glu.h>
 #include <cmath>
 #include <string>
 using namespace std;
 
 #include "modelerglobals.h"
 
-#define USE_COLOR_BLUE 135.0/256.0, 196.0/256.0, 250.0/256.0
-#define USE_COLOR_SILVER 0.851f, 0.851f, 0.851f
+#define USE_COLOR_BLUE 54.0/255.0, 86.0/255.0, 128.0/255.0
+#define USE_COLOR_SILVER 238.0/255.0, 238.0 / 255.0, 236.0/255.0
+#define USE_COLOR_GOLD 252.0/255.0,247.0/255.0,135.0/255.0
+#define USE_COLOR_EXCALIBUR 254.0/255.0,245.0/255.0,226.0/255.0
+#define USE_COLOR_DARK 50.0/255.0,56.0/255.0,73.0/255.0
+#define USE_COLOR_BLACK 12.0/255.0,11.0/255.0,18.0/255.0
 
 const double esp = 1e-6;
 enum{
 	PRIMITIVE_BOX = 1,
 	PRIMITIVE_SPHERE,
 	PRIMITIVE_CYLINDER,
+	PRIMITIVE_CYLINDER_NO_DISK,
+	SHAPE_TORSO,
+	SHAPE_TORSO_LINEAR,
 	PRIMITIVE_TRIANGLE,
+	SHAPE_BLADE,
 	PRIMITIVE_TYPES
+};
+
+enum{
+	TYPE_EXCALIBUR = 1,
+	TYPE_CALIBURN,
+	TYPE_EXCALIBUR_MORGAN,
+	TYPE_SWORDS
 };
 
 class ModelNode{
 private:
 	ModelNode *childHead, *brotherNext;
 	int primitiveType;
+	int swordType;
 	GLdouble xAngle, yAngle, zAngle, startPosX, startPosY, startPosZ, xScale, yScale, zScale;
-	GLdouble upperScale;
+	GLdouble upperScale,middleScale,middleRatio;
 	GLdouble colorRed, colorGreen, colorBlue;
 	GLdouble colorAlpha;
 	GLdouble transX, transY, transZ;
@@ -40,8 +57,9 @@ public:
 	void setScale(GLdouble X, GLdouble Y, GLdouble Z);
 	void setColor(GLdouble r, GLdouble g, GLdouble b);
 	void setColorAlpha(GLdouble r, GLdouble g, GLdouble b,GLdouble alpha);
+	void setSwordType(int ty);
 	void setTrans(GLdouble X, GLdouble Y, GLdouble Z);
-	void cylinderUpperScale(GLdouble theUpperScale);
+	void cylinderScale(GLdouble theUpperScale, GLdouble theMiddleScale, GLdouble theMiddleRatio);
 	void Render();
 };
 
@@ -67,4 +85,5 @@ private:
 	ModelNode *treeRoot;
 	ModelNode upperTorso, lowerTorso, leftUpperArm, leftLowerArm, rightUpperArm, rightLowerArm;
 	ModelNode excaliburGrip, excaliburGuard, excaliburBlade, head, leftUpperLeg, leftLowerLeg, rightUpperLeg, rightLowerLeg;
+	ModelNode leftShoulder, rightShoulder;
 };
