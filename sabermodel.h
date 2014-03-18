@@ -17,6 +17,8 @@ using namespace std;
 #define USE_COLOR_EXCALIBUR 254.0/255.0,245.0/255.0,226.0/255.0
 #define USE_COLOR_DARK 50.0/255.0,56.0/255.0,73.0/255.0
 #define USE_COLOR_BLACK 12.0/255.0,11.0/255.0,18.0/255.0
+#define USE_COLOR_RED 234.0/255.0,65.0/255.0,43.0/255.0
+#define USE_COLOR_WHITE 252.0/255.0,248.0/255.0,246.0/255.0
 
 const double esp = 1e-6;
 enum{
@@ -37,6 +39,14 @@ enum{
 	TYPE_EXCALIBUR_MORGAN,
 	TYPE_SWORDS
 };
+
+enum{
+	COSTUME_SABER = 1,
+	COSTUME_SABER_ALTER,
+	COSTUME_SABER_LILY
+};
+
+const GLdouble LOWER_ARM_SLASH=0.8;
 
 class ModelNode{
 private:
@@ -71,8 +81,13 @@ public:
 		: ModelerView(x, y, w, h, label)
 		{
 		InitializeTree();
+		CostumeSaber();
 	}
 	void InitializeTree();
+	void CostumeSaber();
+	void CostumeSaberAlter();
+	void CostumeSaberLily();
+	void ChooseCostume(int cost);
 	virtual void draw();
 	void LocateBody(GLdouble xPos, GLdouble yPos, GLdouble zPos, GLdouble rotateAngle);
 	void RotateLeftUpperArm(GLdouble X, GLdouble Y, GLdouble Z, char theRotateOrder[] = "xyz");

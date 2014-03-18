@@ -260,7 +260,6 @@ void drawTorsoLinear(GLdouble h, GLdouble r1, GLdouble r2, GLdouble rm, GLdouble
 }
 
 void drawBlade(int swordType){
-	swordType = TYPE_EXCALIBUR_MORGAN;
 	if(swordType==TYPE_EXCALIBUR_MORGAN)setDiffuseColor(USE_COLOR_DARK);
 	else setDiffuseColor(USE_COLOR_EXCALIBUR);
 	glScaled(1.0/13.5, 1.0 / 320.0, 1.0);
@@ -270,26 +269,26 @@ void drawBlade(int swordType){
 	drawTriangle(0.0, 280.0, 1.0, 0.0, 320.0, 0.0, -9.0, 300.0, 0.0);
 	drawTriangle(0.0, 280.0, 1.0, -9.0, 300.0, 0.0, -4.0,275.0,1.0);
 	drawTriangle(-4.0, 275.0, 1.0, -9.0, 300.0, 0.0, -13.5, 23.0, 0.0);
-	drawTriangle(-4.0, 275.0, 1.0, -13.5, 23.0, 0.0, -11.0, 37.0, 1.0);
-	drawTriangle(-11.0,37.0,1.0,-13.5,23.0,0.0,-11.0,18.0,1.0);
+	drawTriangle(-4.0, 275.0, 1.0, -13.5, 23.0, 0.0, -8.0, 37.0, 1.0);
+	drawTriangle(-8.0, 37.0, 1.0, -13.5, 23.0, 0.0, -8.0, 18.0, 1.0);
 	//Right upper
 	drawTriangle(0.0, 280.0, 1.0, 9.0, 300.0, 0.0, 0.0, 320.0, 0.0);
 	drawTriangle(0.0, 280.0, 1.0, 4.0, 275.0, 1.0, 9.0, 300.0, 0.0);
 	drawTriangle(4.0, 275.0, 1.0, 13.5, 23.0, 0.0, 9.0, 300.0, 0.0);
-	drawTriangle(4.0, 275.0, 1.0, 11.0, 37.0, 1.0, 13.5, 23.0, 0.0);
-	drawTriangle(11.0, 37.0, 1.0, 11.0, 18.0, 1.0, 13.5, 23.0, 0.0);
+	drawTriangle(4.0, 275.0, 1.0, 8.0, 37.0, 1.0, 13.5, 23.0, 0.0);
+	drawTriangle(8.0, 37.0, 1.0, 8.0, 18.0, 1.0, 13.5, 23.0, 0.0);
 	//Left lower
 	drawTriangle(0.0, 280.0, -1.0, -9.0, 300.0, 0.0, 0.0, 320.0, 0.0);
 	drawTriangle(0.0, 280.0, -1.0, -4.0, 275.0, -1.0, -9.0, 300.0, 0.0);
 	drawTriangle(-4.0, 275.0, -1.0, -13.5, 23.0, 0.0, -9.0, 300.0, 0.0);
-	drawTriangle(-4.0, 275.0, -1.0, -11.0, 37.0, -1.0, -13.5, 23.0, 0.0);
-	drawTriangle(-11.0, 37.0, -1.0, -11.0, 18.0, -1.0, -13.5, 23.0, 0.0);
+	drawTriangle(-4.0, 275.0, -1.0, -8.0, 37.0, -1.0, -13.5, 23.0, 0.0);
+	drawTriangle(-8.0, 37.0, -1.0, -8.0, 18.0, -1.0, -13.5, 23.0, 0.0);
 	//Right lower
 	drawTriangle(0.0, 280.0, -1.0, 0.0, 320.0, 0.0, 9.0, 300.0, 0.0);
 	drawTriangle(0.0, 280.0, -1.0, 9.0, 300.0, 0.0, 4.0, 275.0, -1.0);
 	drawTriangle(4.0, 275.0, -1.0, 9.0, 300.0, 0.0, 13.5, 23.0, 0.0);
-	drawTriangle(4.0, 275.0, -1.0, 13.5, 23.0, 0.0, 11.0, 37.0, -1.0);
-	drawTriangle(11.0, 37.0, -1.0, 13.5, 23.0, 0.0, 11.0, 18.0, -1.0);
+	drawTriangle(4.0, 275.0, -1.0, 13.5, 23.0, 0.0, 8.0, 37.0, -1.0);
+	drawTriangle(8.0, 37.0, -1.0, 13.5, 23.0, 0.0, 8.0, 18.0, -1.0);
 	//Second part:spine
 	switch (swordType){
 	case TYPE_EXCALIBUR:
@@ -302,7 +301,88 @@ void drawBlade(int swordType){
 		setDiffuseColor(USE_COLOR_GOLD);
 		break;
 	}
+	//Up
+	drawTriangle(-4.0, 275.0, 1.0, 4.0, 275.0, 1.0, 0.0, 280.0, 1.0);
+	drawTriangle(0.0, 55.0, 1.0, 4.0, 275.0, 1.0, 0.5, 275.0, 1.0);
+	drawTriangle(0.0, 55.0, 1.0, -0.5, 275.0, 1.0, -4.0, 275.0, 1.0);
+	drawTriangle(0.0, 55.0, 1.0, 8.0, 46.0, 1.0, 4.0, 275.0, 1.0);
+	drawTriangle(0.0, 55.0, 1.0, -4.0, 275.0, 1.0, -8.0, 46.0, 1.0);
+	//Down
+	drawTriangle(-4.0, 275.0, -1.0, 0.0, 280.0, -1.0, 4.0, 275.0, -1.0);
+	drawTriangle(0.0, 55.0, -1.0, -4.0, 275.0, -1.0, -0.5, 275.0, -1.0);
+	drawTriangle(0.0, 55.0, -1.0, 0.5, 275.0, -1.0, 4.0, 275.0, -1.0);
+	drawTriangle(0.0, 55.0, -1.0, 4.0, 275.0, -1.0, 8.0, 46.0, -1.0);
+	drawTriangle(0.0, 55.0, -1.0, -8.0, 46.0, -1.0, -4.0, 275.0, -1.0);
+	if (swordType == TYPE_EXCALIBUR_MORGAN)setDiffuseColor(USE_COLOR_RED);
+	drawTriangle(0.0, 55.0, 1.0, 0.5, 275.0, 1.0, -0.5, 275.0, 1.0);
+	drawTriangle(0.0, 55.0, -1.0, -0.5, 275.0, -1.0, 0.5, 275.0, -1.0);
 
+	//Third part:decoration
+	switch (swordType){
+	case TYPE_EXCALIBUR:
+		setDiffuseColor(USE_COLOR_BLUE);
+		break;
+	case TYPE_EXCALIBUR_MORGAN:
+		setDiffuseColor(USE_COLOR_BLACK);
+		break;
+	case TYPE_CALIBURN:
+		setDiffuseColor(USE_COLOR_BLUE);
+		break;
+	}
+	//up
+	drawTriangle(-8.0, 46.0, 1.0, 8.0, 46.0, 1.0, 0.0, 53.0, 1.0);
+	
+	drawTriangle(-8.0, 0.0, 1.0, 8.0, 46.0, 1.0, -8.0, 46.0, 1.0);
+	drawTriangle(-8.0, 0.0, 1.0, 8.0, 0.0, 1.0, 8.0, 46.0, 1.0);
+	//down
+	drawTriangle(-8.0, 46.0, -1.0, 0.0, 53.0, -1.0, 8.0, 46.0, -1.0);
+
+	drawTriangle(-8.0, 0.0, -1.0, -8.0, 46.0, -1.0, 8.0, 46.0, -1.0);
+	drawTriangle(-8.0, 0.0, -1.0, 8.0, 46.0, -1.0, 8.0, 0.0, -1.0);
+	switch (swordType){
+	case TYPE_EXCALIBUR:
+		setDiffuseColor(USE_COLOR_GOLD);
+		break;
+	case TYPE_EXCALIBUR_MORGAN:
+		setDiffuseColor(USE_COLOR_RED);
+		break;
+	case TYPE_CALIBURN:
+		setDiffuseColor(USE_COLOR_BLUE);
+		break;
+	}
+	drawTriangle(-8.0, 46.0, 1.0, 0.0, 53.0, 1.0, 0.0, 55.0, 1.0);
+	drawTriangle(0.0, 55.0, 1.0, 0.0, 53.0, 1.0, 8.0, 46.0, 1.0);
+
+	drawTriangle(-8.0, 46.0, -1.0, 0.0, 55.0, -1.0, 0.0, 53.0, -1.0);
+	drawTriangle(0.0, 55.0, -1.0, 8.0, 46.0, -1.0, 0.0, 53.0, -1.0);
+
+	//Fourth part:Side
+	switch (swordType){
+	case TYPE_EXCALIBUR:
+		setDiffuseColor(USE_COLOR_GOLD);
+		break;
+	case TYPE_EXCALIBUR_MORGAN:
+		setDiffuseColor(USE_COLOR_DARK);
+		break;
+	case TYPE_CALIBURN:
+		setDiffuseColor(USE_COLOR_BLUE);
+		break;
+	}
+	//left up
+	drawTriangle(-8.0, 18.0, 1.0, -13.5, 23.0, 0.0, -13.5, 0.0, 0.0);
+	drawTriangle(-8.0, 18.0, 1.0, -13.5, 0.0, 0.0, -8.0, 0.0, 1.0);
+
+	//right up
+	drawTriangle(8.0, 18.0, 1.0, 13.5, 0.0, 0.0, 13.5, 23.0, 0.0);
+	drawTriangle(8.0, 18.0, 1.0, 8.0, 0.0, 1.0, 13.5, 0.0, 0.0);
+	//left down
+
+	drawTriangle(-8.0, 18.0, -1.0, -13.5, 0.0, 0.0, -13.5, 23.0, 0.0);
+	drawTriangle(-8.0, 18.0, -1.0, -8.0, 0.0, -1.0, -13.5, 0.0, 0.0);
+	//right down
+
+	drawTriangle(8.0, 18.0, -1.0, 13.5, 23.0, 0.0, 13.5, 0.0, 0.0);
+	drawTriangle(8.0, 18.0, -1.0, 13.5, 0.0, 0.0, 8.0, 0.0, -1.0);
 }
 
 ModelNode::ModelNode(){
@@ -451,6 +531,12 @@ void SaberModel::InitializeTree(){
 	rightUpperLeg.nodeCreate(&upperTorso, PRIMITIVE_BOX);
 	rightLowerLeg.nodeCreate(&rightUpperLeg, PRIMITIVE_BOX);
 	treeRoot = &upperTorso;
+}
+
+void SaberModel::CostumeSaber(){
+
+	leftShoulder.nodeCreate(NULL, SHAPE_TORSO_LINEAR);
+	rightShoulder.nodeCreate(NULL, SHAPE_TORSO_LINEAR);
 
 	upperTorso.setAngle(0.0, 0.0, 0.0);
 	upperTorso.setColor(USE_COLOR_SILVER);
@@ -557,6 +643,62 @@ void SaberModel::InitializeTree(){
 	rightLowerLeg.setScale(1.0, -2.0, 1.0);
 	rightLowerLeg.setStartPos(0.0, -2.2, 0.0);
 	rightLowerLeg.setTrans(-0.5, 0.0, -0.5);
+}
+void SaberModel::CostumeSaberAlter(){
+	CostumeSaber();
+	excaliburBlade.setSwordType(TYPE_EXCALIBUR_MORGAN);
+
+	upperTorso.setColor(USE_COLOR_DARK);
+	lowerTorso.setColor(USE_COLOR_BLACK);
+	leftUpperArm.setColor(USE_COLOR_BLACK);
+	leftLowerArm.setColor(USE_COLOR_DARK);
+	rightUpperArm.setColor(USE_COLOR_BLACK);
+	rightLowerArm.setColor(USE_COLOR_DARK);
+	leftUpperLeg.setColor(USE_COLOR_BLACK);
+	leftLowerLeg.setColor(USE_COLOR_DARK);
+	rightUpperLeg.setColor(USE_COLOR_BLACK);
+	rightLowerLeg.setColor(USE_COLOR_DARK);
+	leftShoulder.setColor(USE_COLOR_DARK);
+	rightShoulder.setColor(USE_COLOR_DARK);
+	leftShoulder.cylinderScale(1.0, 1.8, 0.4);
+	rightShoulder.cylinderScale(1.0, 1.8, 0.4);
+}
+void SaberModel::CostumeSaberLily(){
+	CostumeSaber();
+	excaliburBlade.setSwordType(TYPE_CALIBURN);
+	
+	leftShoulder.nodeCreate(NULL, SHAPE_TORSO);
+	rightShoulder.nodeCreate(NULL, SHAPE_TORSO);
+
+	upperTorso.setColor(USE_COLOR_SILVER);
+	lowerTorso.setColor(USE_COLOR_WHITE);
+	leftUpperArm.setColor(USE_COLOR_WHITE);
+	leftLowerArm.setColor(USE_COLOR_SILVER);
+	rightUpperArm.setColor(USE_COLOR_WHITE);
+	rightLowerArm.setColor(USE_COLOR_SILVER);
+	leftUpperLeg.setColor(USE_COLOR_WHITE);
+	leftLowerLeg.setColor(USE_COLOR_SILVER);
+	rightUpperLeg.setColor(USE_COLOR_WHITE);
+	rightLowerLeg.setColor(USE_COLOR_SILVER);
+	leftShoulder.setColor(USE_COLOR_WHITE);
+	rightShoulder.setColor(USE_COLOR_WHITE);
+	leftShoulder.cylinderScale(1.0, 1.2, 0.4);
+	rightShoulder.cylinderScale(1.0, 1.2, 0.4);
+
+}
+
+void SaberModel::ChooseCostume(int cost){
+	switch (cost){
+	case COSTUME_SABER:
+		CostumeSaber();
+		break;
+	case COSTUME_SABER_ALTER:
+		CostumeSaberAlter();
+		break;
+	case COSTUME_SABER_LILY:
+		CostumeSaberLily();
+		break;
+	}
 }
 
 void SaberModel::LocateBody(GLdouble xPos, GLdouble yPos, GLdouble zPos, GLdouble rotateAngle){
