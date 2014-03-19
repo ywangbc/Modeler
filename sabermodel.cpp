@@ -849,7 +849,7 @@ void SaberModel::CostumeSaber(){
 	lowerArmor[0].setStartPos(0.0, 0.0, 0.0);
 	lowerArmor[0].setTrans(0.0, 0.0, 0.0);//center at weist
 	lowerArmor[0].cylinderScale(1.8, 1.0, 0.5);
-	lowerArmor[0].setStartAndEndAngle(-70, 250);
+	lowerArmor[0].setStartAndEndAngle(-70, 70);
 
 	lowerArmor[1].setAngle(0.0, 0.0, 0.0);
 	lowerArmor[1].setColor(USE_COLOR_SILVER);
@@ -857,7 +857,7 @@ void SaberModel::CostumeSaber(){
 	lowerArmor[1].setStartPos(0.0, -1.05, 0.0);
 	lowerArmor[1].setTrans(0.0, 0.0, 0.0);
 	lowerArmor[1].cylinderScale(1.4, 1.0, 0.5);
-	lowerArmor[1].setStartAndEndAngle(-70, 250);
+	lowerArmor[1].setStartAndEndAngle(-70, 70);
 
 	lowerArmor[2].setAngle(0.0, 0.0, 0.0);
 	lowerArmor[2].setColor(USE_COLOR_SILVER);
@@ -865,11 +865,33 @@ void SaberModel::CostumeSaber(){
 	lowerArmor[2].setStartPos(0.0, -1.05, 0.0);
 	lowerArmor[2].setTrans(0.0, 0.0, 0.0);
 	lowerArmor[2].cylinderScale(1.3, 1.0, 0.5);
-	lowerArmor[2].setStartAndEndAngle(-70, 250);
+	lowerArmor[2].setStartAndEndAngle(-70, 70);
 
-	lowerArmor[3].disableNode();
-	lowerArmor[4].disableNode();
-	lowerArmor[5].disableNode();
+	lowerArmor[3].setAngle(0.0, 0.0, 0.0);
+	lowerArmor[3].setColor(USE_COLOR_SILVER);
+	lowerArmor[3].setScale(0.8, 1.0, 0.5);
+	lowerArmor[3].setStartPos(0.0, 0.0, 0.0);
+	lowerArmor[3].setTrans(0.0, 0.0, 0.0);//center at weist
+	lowerArmor[3].cylinderScale(1.8, 1.0, 0.5);
+	lowerArmor[3].setStartAndEndAngle(110, 250);
+
+	lowerArmor[4].setAngle(0.0, 0.0, 0.0);
+	lowerArmor[4].setColor(USE_COLOR_SILVER);
+	lowerArmor[4].setScale(1.5, 1.0, 0.9);
+	lowerArmor[4].setStartPos(0.0, -1.05, 0.0);
+	lowerArmor[4].setTrans(0.0, 0.0, 0.0);
+	lowerArmor[4].cylinderScale(1.4, 1.0, 0.5);
+	lowerArmor[4].setStartAndEndAngle(110, 250);
+
+	lowerArmor[5].setAngle(0.0, 0.0, 0.0);
+	lowerArmor[5].setColor(USE_COLOR_SILVER);
+	lowerArmor[5].setScale(2.1, 1.0, 1.26);
+	lowerArmor[5].setStartPos(0.0, -1.05, 0.0);
+	lowerArmor[5].setTrans(0.0, 0.0, 0.0);
+	lowerArmor[5].cylinderScale(1.3, 1.0, 0.5);
+	lowerArmor[5].setStartAndEndAngle(110, 250);
+
+	lowerFront[0].enableNode();
 
 	lowerFront[0].setAngle(0.0, 0.0, 0.0);
 	lowerFront[0].setColor(USE_COLOR_LIGHT_BLUE);
@@ -878,7 +900,7 @@ void SaberModel::CostumeSaber(){
 	lowerFront[0].setTrans(0.0, 0.0, 0.0);
 	lowerFront[0].cylinderScale(3.5, 1.0, 0.5);
 	lowerFront[0].setStartAndEndAngle(250, 290);
-
+	
 	lowerFront[1].disableNode();
 
 	lowerOuter[0].setAngle(0.0, 0.0, 0.0);
@@ -887,10 +909,27 @@ void SaberModel::CostumeSaber(){
 	lowerOuter[0].setStartPos(0.0, 0.0, 0.0);
 	lowerOuter[0].setTrans(0.0, 0.0, 0.0);
 	lowerOuter[0].cylinderScale(3.7, 1.0, 0.5);
-	lowerOuter[0].setStartAndEndAngle(-75, 255);
+	lowerOuter[0].setStartAndEndAngle(-75, 85);
 
-	lowerOuter[1].disableNode();
-	lowerOuter[2].disableNode();
+	lowerOuter[1].enableNode();
+	lowerOuter[2].enableNode();
+
+	lowerOuter[1].setAngle(0.0, 0.0, 0.0);
+	lowerOuter[1].setColor(USE_COLOR_BLUE);
+	lowerOuter[1].setScale(0.8, 3.8, 0.5);
+	lowerOuter[1].setStartPos(0.0, 0.0, 0.0);
+	lowerOuter[1].setTrans(0.0, 0.0, 0.0);
+	lowerOuter[1].cylinderScale(3.4, 1.0, 0.5);
+	lowerOuter[1].setStartAndEndAngle(80,100);
+
+	lowerOuter[2].setAngle(0.0, 0.0, 0.0);
+	lowerOuter[2].setColor(USE_COLOR_BLUE);
+	lowerOuter[2].setScale(0.8, 4.3, 0.5);
+	lowerOuter[2].setStartPos(0.0, 0.0, 0.0);
+	lowerOuter[2].setTrans(0.0, 0.0, 0.0);
+	lowerOuter[2].cylinderScale(3.7, 1.0, 0.5);
+	lowerOuter[2].setStartAndEndAngle(95, 255);
+
 	lowerOuter[3].disableNode();
 	lowerOuter[4].disableNode();
 	lowerOuter[5].disableNode();
@@ -900,71 +939,85 @@ void SaberModel::CostumeSaberAlter(){
 	CostumeSaber();
 	excaliburBlade.setSwordType(TYPE_EXCALIBUR_MORGAN);
 
-	upperTorso.setColor(USE_COLOR_DARK);
-	lowerTorso.setColor(USE_COLOR_BLACK);
-	leftUpperArm.setColor(USE_COLOR_BLACK);
-	leftLowerArm.setColor(USE_COLOR_DARK);
-	rightUpperArm.setColor(USE_COLOR_BLACK);
-	rightLowerArm.setColor(USE_COLOR_DARK);
-	leftUpperLeg.setColor(USE_COLOR_BLACK);
-	leftLowerLeg.setColor(USE_COLOR_DARK);
-	rightUpperLeg.setColor(USE_COLOR_BLACK);
-	rightLowerLeg.setColor(USE_COLOR_DARK);
-	leftShoulder.setColor(USE_COLOR_DARK);
-	rightShoulder.setColor(USE_COLOR_DARK);
+	upperTorso.setColor(USE_COLOR_DARK_ARMOR);
+	leftUpperArm.setColor(USE_COLOR_DARK_CLOTHES);
+	leftLowerArm.setColor(USE_COLOR_DARK_ARMOR);
+	rightUpperArm.setColor(USE_COLOR_DARK_CLOTHES);
+	rightLowerArm.setColor(USE_COLOR_DARK_ARMOR);
+	leftUpperLeg.setColor(USE_COLOR_DARK_CLOTHES);
+	leftLowerLeg.setColor(USE_COLOR_DARK_ARMOR);
+	rightUpperLeg.setColor(USE_COLOR_DARK_CLOTHES);
+	rightLowerLeg.setColor(USE_COLOR_DARK_ARMOR);
+	leftShoulder.setColor(USE_COLOR_DARK_CLOTHES);
+	rightShoulder.setColor(USE_COLOR_DARK_CLOTHES);
 	leftShoulder.cylinderScale(1.0, 1.8, 0.4);
 	rightShoulder.cylinderScale(1.0, 1.8, 0.4);
 
 	lowerTorso.setAngle(0.0, 0.0, 0.0);
-	lowerTorso.setColor(USE_COLOR_WHITE);
-	lowerTorso.setScale(0.75, 4.5, 0.47);
+	lowerTorso.setColor(USE_COLOR_BLACK_CLOTHES);
+	lowerTorso.setScale(0.75, 4.0, 0.47);
 	lowerTorso.setStartPos(0.0, -2.5, 0.0);
 	lowerTorso.setTrans(0.0, 0.0, 0.0);//center at weist
-	lowerTorso.cylinderScale(4.0, 1.0, 0.5);
+	lowerTorso.cylinderScale(2.7, 1.0, 0.5);
 
 	lowerArmor[0].setAngle(0.0, 0.0, 0.0);
-	lowerArmor[0].setColor(USE_COLOR_SILVER);
-	lowerArmor[0].setScale(0.8, 1.0, 0.5);
+	lowerArmor[0].setColor(USE_COLOR_DARK_ARMOR);
+	lowerArmor[0].setScale(0.8, 0.7, 0.5);
 	lowerArmor[0].setStartPos(0.0, 0.0, 0.0);
 	lowerArmor[0].setTrans(0.0, 0.0, 0.0);//center at weist
-	lowerArmor[0].cylinderScale(1.8, 1.0, 0.5);
-	lowerArmor[0].setStartAndEndAngle(-70, 250);
+	lowerArmor[0].cylinderScale(1.4, 1.0, 0.5);
+	lowerArmor[0].setStartAndEndAngle(-70, 70);
 
 	lowerArmor[1].setAngle(0.0, 0.0, 0.0);
-	lowerArmor[1].setColor(USE_COLOR_SILVER);
-	lowerArmor[1].setScale(1.5, 1.0, 0.9);
-	lowerArmor[1].setStartPos(0.0, -1.05, 0.0);
+	lowerArmor[1].setColor(USE_COLOR_DARK_ARMOR);
+	lowerArmor[1].setScale(1.15, 0.7, 0.7);
+	lowerArmor[1].setStartPos(0.0, -0.75, 0.0);
 	lowerArmor[1].setTrans(0.0, 0.0, 0.0);
-	lowerArmor[1].cylinderScale(1.4, 1.0, 0.5);
-	lowerArmor[1].setStartAndEndAngle(-70, 250);
+	lowerArmor[1].cylinderScale(1.3, 1.0, 0.5);
+	lowerArmor[1].setStartAndEndAngle(-70, 70);
 
 	lowerArmor[2].setAngle(0.0, 0.0, 0.0);
-	lowerArmor[2].setColor(USE_COLOR_SILVER);
-	lowerArmor[2].setScale(2.1, 1.0, 1.26);
-	lowerArmor[2].setStartPos(0.0, -1.05, 0.0);
+	lowerArmor[2].setColor(USE_COLOR_DARK_ARMOR);
+	lowerArmor[2].setScale(1.5, 0.7, 0.9);
+	lowerArmor[2].setStartPos(0.0, -0.75, 0.0);
 	lowerArmor[2].setTrans(0.0, 0.0, 0.0);
-	lowerArmor[2].cylinderScale(1.3, 1.0, 0.5);
-	lowerArmor[2].setStartAndEndAngle(-70, 250);
+	lowerArmor[2].cylinderScale(1.25, 1.0, 0.5);
+	lowerArmor[2].setStartAndEndAngle(-70, 70);
 
-	lowerFront[0].setAngle(0.0, 0.0, 0.0);
-	lowerFront[0].setColor(USE_COLOR_LIGHT_BLUE);
-	lowerFront[0].setScale(0.8, 3.5, 0.5);
-	lowerFront[0].setStartPos(0.0, 0.0, 0.0);
-	lowerFront[0].setTrans(0.0, 0.0, 0.0);
-	lowerFront[0].cylinderScale(3.5, 1.0, 0.5);
-	lowerFront[0].setStartAndEndAngle(250, 290);
+	lowerArmor[3].setAngle(0.0, 0.0, 0.0);
+	lowerArmor[3].setColor(USE_COLOR_DARK_ARMOR);
+	lowerArmor[3].setScale(0.8, 0.7, 0.5);
+	lowerArmor[3].setStartPos(0.0, 0.0, 0.0);
+	lowerArmor[3].setTrans(0.0, 0.0, 0.0);//center at weist
+	lowerArmor[3].cylinderScale(1.4, 1.0, 0.5);
+	lowerArmor[3].setStartAndEndAngle(110, 250);
+
+	lowerArmor[4].setAngle(0.0, 0.0, 0.0);
+	lowerArmor[4].setColor(USE_COLOR_DARK_ARMOR);
+	lowerArmor[4].setScale(1.15, 0.7, 0.7);
+	lowerArmor[4].setStartPos(0.0, -0.75, 0.0);
+	lowerArmor[4].setTrans(0.0, 0.0, 0.0);
+	lowerArmor[4].cylinderScale(1.3, 1.0, 0.5);
+	lowerArmor[4].setStartAndEndAngle(110, 250);
+
+	lowerArmor[5].setAngle(0.0, 0.0, 0.0);
+	lowerArmor[5].setColor(USE_COLOR_DARK_ARMOR);
+	lowerArmor[5].setScale(1.5, 0.7, 0.9);
+	lowerArmor[5].setStartPos(0.0, -0.75, 0.0);
+	lowerArmor[5].setTrans(0.0, 0.0, 0.0);
+	lowerArmor[5].cylinderScale(1.25, 1.0, 0.5);
+	lowerArmor[5].setStartAndEndAngle(110, 250);
+
+	lowerFront[0].disableNode();
 
 	lowerOuter[0].setAngle(0.0, 0.0, 0.0);
-	lowerOuter[0].setColor(USE_COLOR_BLUE);
-	lowerOuter[0].setScale(0.8, 4.3, 0.5);
+	lowerOuter[0].setColor(USE_COLOR_DARK_CLOTHES);
+	lowerOuter[0].setScale(0.8, 4.5, 0.5);
 	lowerOuter[0].setStartPos(0.0, 0.0, 0.0);
 	lowerOuter[0].setTrans(0.0, 0.0, 0.0);
-	lowerOuter[0].cylinderScale(3.7, 1.0, 0.5);
+	lowerOuter[0].cylinderScale(3.3, 1.0, 0.5);
 	lowerOuter[0].setStartAndEndAngle(-75, 255);
 
-	lowerArmor[3].disableNode();
-	lowerArmor[4].disableNode();
-	lowerArmor[5].disableNode();
 
 	lowerFront[1].disableNode();
 
@@ -1003,10 +1056,8 @@ void SaberModel::CostumeSaberLily(){
 	lowerTorso.setTrans(0.0, 0.0, 0.0);//center at weist
 	lowerTorso.cylinderScale(4.0, 1.0, 0.5);
 
-	lowerArmor[3].enableNode();
-	lowerArmor[4].enableNode();
-	lowerArmor[5].enableNode();
 
+	lowerFront[0].enableNode();
 	lowerFront[1].enableNode();
 
 	lowerOuter[1].enableNode();
