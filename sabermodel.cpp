@@ -72,13 +72,118 @@ void QuadFunction(GLdouble x1, GLdouble y1, GLdouble x2, GLdouble y2, GLdouble x
 
 }
 
-void drawTorso(GLdouble h,GLdouble r1,GLdouble r2,GLdouble rm,GLdouble mratio){
+const GLdouble DIVIDE_POINT = 1.0/4.0;
+const GLdouble ACME_DELTA = 0.1;
+
+void drawTorsoHalfLinear(GLdouble h,GLdouble r1,GLdouble r2,GLdouble rm,GLdouble mratio){
 	GLdouble hup, hlow;
 	hlow = mratio * h;
 	hup = h - hlow;
 	GLdouble A, B, C;
 
-	QuadFunction(0, r1, hlow, rm, h, r2,A,B,C);
+	QuadFunction(0+hlow*(1-DIVIDE_POINT), r1*(DIVIDE_POINT)+rm*(1-DIVIDE_POINT), hlow, rm*(1-ACME_DELTA), hup*DIVIDE_POINT+hlow, r2*DIVIDE_POINT+rm*(1-DIVIDE_POINT),A,B,C);
+
+	ModelerDrawState *mds = ModelerDrawState::Instance();
+	int divisions;
+
+	_setupOpenGl();
+
+	switch (mds->m_quality)
+	{
+	case HIGH:
+		divisions = 32; break;
+	case MEDIUM:
+		divisions = 20; break;
+	case LOW:
+		divisions = 12; break;
+	case POOR:
+		divisions = 8; break;
+	}
+
+	if (mds->m_rayFile)
+	{
+		_dump_current_modelview();
+		fprintf(mds->m_rayFile,
+			"cone { height=%f; bottom_radius=%f; top_radius=%f;\n", h, r1, r2);
+		_dump_current_material();
+		fprintf(mds->m_rayFile, "})\n");
+	}
+	else
+	{
+		GLUquadricObj* gluq;
+
+		/* GLU will again do the work.  draw the sides of the cylinder. */
+		gluq = gluNewQuadric();
+		gluQuadricDrawStyle(gluq, GLU_FILL);
+		gluQuadricTexture(gluq, GL_TRUE);
+		glPushMatrix();
+		gluCylinder(gluq, r1, r1*(DIVIDE_POINT)+rm*(1 - DIVIDE_POINT), hlow*(1 - DIVIDE_POINT), divisions, divisions);
+		glTranslated(0.0, 0.0, hlow*(1 - DIVIDE_POINT));
+		for (int i = 0; i < divisions; i++){
+			GLdouble rfirst, rsecond, hfirst, hsecond;
+			hfirst = i*h*DIVIDE_POINT / divisions + hlow*(1-DIVIDE_POINT);
+			hsecond = (i + 1)*h*DIVIDE_POINT / divisions + hlow*(1 - DIVIDE_POINT);
+			rfirst = hfirst*hfirst*A + hfirst*B + C;
+			rsecond = hsecond*hsecond*A + hsecond*B + C;
+			gluCylinder(gluq, rfirst, rsecond, hsecond-hfirst, divisions, 3);
+			glTranslated(0.0, 0.0, hsecond - hfirst);
+		}
+		gluCylinder(gluq, r2*DIVIDE_POINT + rm*(1 - DIVIDE_POINT), r2, hup*(1-DIVIDE_POINT), divisions, divisions);
+		glPopMatrix();
+		gluDeleteQuadric(gluq);
+
+		if (r1 > 0.0)
+		{
+			/* if the r1 end does not come to a point, draw a flat disk to
+			cover it up. */
+
+			gluq = gluNewQuadric();
+			gluQuadricDrawStyle(gluq, GLU_FILL);
+			gluQuadricTexture(gluq, GL_TRUE);
+			gluQuadricOrientation(gluq, GLU_INSIDE);
+			gluDisk(gluq, 0.0, r1, divisions, divisions);
+			gluDeleteQuadric(gluq);
+		}
+
+		if (r2 > 0.0)
+		{
+			/* if the r2 end does not come to a point, draw a flat disk to
+			cover it up. */
+
+			/* save the current matrix mode. */
+			int savemode;
+			glGetIntegerv(GL_MATRIX_MODE, &savemode);
+
+			/* translate the origin to the other end of the cylinder. */
+			glMatrixMode(GL_MODELVIEW);
+			glPushMatrix();
+			glTranslated(0.0, 0.0, h);
+
+			/* draw a disk centered at the new origin. */
+			gluq = gluNewQuadric();
+			gluQuadricDrawStyle(gluq, GLU_FILL);
+			gluQuadricTexture(gluq, GL_TRUE);
+			gluQuadricOrientation(gluq, GLU_OUTSIDE);
+			gluDisk(gluq, 0.0, r2, divisions, divisions);
+			gluDeleteQuadric(gluq);
+
+			/* restore the matrix stack and mode. */
+			glPopMatrix();
+			glMatrixMode(savemode);
+		}
+	}
+
+	
+}
+
+
+void drawTorso(GLdouble h, GLdouble r1, GLdouble r2, GLdouble rm, GLdouble mratio){
+	GLdouble hup, hlow;
+	hlow = mratio * h;
+	hup = h - hlow;
+	GLdouble A, B, C;
+
+	QuadFunction(0, r1, hlow, rm, hup + hlow, r2, A, B, C);
 
 	ModelerDrawState *mds = ModelerDrawState::Instance();
 	int divisions;
@@ -120,7 +225,7 @@ void drawTorso(GLdouble h,GLdouble r1,GLdouble r2,GLdouble rm,GLdouble mratio){
 			hsecond = (i + 1)*h / divisions;
 			rfirst = hfirst*hfirst*A + hfirst*B + C;
 			rsecond = hsecond*hsecond*A + hsecond*B + C;
-			gluCylinder(gluq, rfirst, rsecond, hsecond-hfirst, divisions, 3);
+			gluCylinder(gluq, rfirst, rsecond, hsecond - hfirst, divisions, 3);
 			glTranslated(0.0, 0.0, hsecond - hfirst);
 		}
 		glPopMatrix();
@@ -167,7 +272,7 @@ void drawTorso(GLdouble h,GLdouble r1,GLdouble r2,GLdouble rm,GLdouble mratio){
 		}
 	}
 
-	
+
 }
 
 void drawTorsoLinear(GLdouble h, GLdouble r1, GLdouble r2, GLdouble rm, GLdouble mratio){
@@ -256,6 +361,62 @@ void drawTorsoLinear(GLdouble h, GLdouble r1, GLdouble r2, GLdouble rm, GLdouble
 		}
 	}
 
+
+}
+
+void drawPartialCylinder(GLdouble h, GLdouble r1, GLdouble r2, GLdouble startAngle, GLdouble endAngle){
+	ModelerDrawState *mds = ModelerDrawState::Instance();
+	int divisions;
+	startAngle *= 3.1415926 / 180.0;
+	endAngle *= 3.1415926 / 180.0;
+
+	_setupOpenGl();
+
+	switch (mds->m_quality)
+	{
+	case HIGH:
+		divisions = 32; break;
+	case MEDIUM:
+		divisions = 20; break;
+	case LOW:
+		divisions = 12; break;
+	case POOR:
+		divisions = 8; break;
+	}
+
+	if (mds->m_rayFile)
+	{
+		_dump_current_modelview();
+		fprintf(mds->m_rayFile,
+			"cone { height=%f; bottom_radius=%f; top_radius=%f;\n", h, r1, r2);
+		_dump_current_material();
+		fprintf(mds->m_rayFile, "})\n");
+	}
+	else
+	{	
+		divisions *= 3;
+		GLdouble rangeAngle = endAngle - startAngle;
+		GLdouble upthis[2], uplast[2], downthis[2], downlast[2];
+		upthis[0] = r1*cos(startAngle);
+		upthis[1] = r1*sin(startAngle);
+		downthis[0] = r2*cos(startAngle);
+		downthis[1] = r2*sin(startAngle);
+		for (int i = 1; i <= divisions; i++){
+			GLdouble curAngle = (rangeAngle / divisions)*i + startAngle;
+			uplast[0] = upthis[0];
+			uplast[1] = upthis[1];
+			downlast[0] = downthis[0];
+			downlast[1] = downthis[1];
+			upthis[0] = r1*cos(curAngle);
+			upthis[1] = r1*sin(curAngle);
+			downthis[0] = r2*cos(curAngle);
+			downthis[1] = r2*sin(curAngle);
+			drawTriangle(uplast[0],uplast[1],0.0, downlast[0],downlast[1],h, upthis[0],upthis[1],0.0);
+			drawTriangle(upthis[0],upthis[1],0.0, downlast[0],downlast[1],h, downthis[0],downthis[1],h);
+		}
+
+
+	}
 
 }
 
@@ -387,6 +548,7 @@ void drawBlade(int swordType){
 
 ModelNode::ModelNode(){
 	childHead = brotherNext = NULL;
+	disabled = false;
 }
 void ModelNode::nodeCreate(ModelNode *father, int thePrimitiveType){
 	primitiveType = thePrimitiveType;
@@ -442,7 +604,18 @@ void ModelNode::setSwordType(int ty){
 	swordType = ty;
 }
 
+void ModelNode::setStartAndEndAngle(GLdouble theStartAngle, GLdouble theEndAngle){
+	startAngle = theStartAngle;
+	endAngle = theEndAngle;
+}
+void ModelNode::enableNode(){
+	disabled = false;
+}
+void ModelNode::disableNode(){
+	disabled = true;
+}
 void ModelNode::Render(){
+	if (disabled)return;
 	setAmbientColor(.1f, .1f, .1f);
 	if (abs(colorAlpha - 1.0) < esp){
 		setDiffuseColor(colorRed, colorGreen, colorBlue);//set color
@@ -492,10 +665,21 @@ void ModelNode::Render(){
 		glScaled(xScale, zScale, yScale / abs(yScale));
 		drawTorsoLinear(abs(yScale), 1.0, upperScale, middleScale,middleRatio);
 		break;
+	case SHAPE_TORSO_HALF_LINEAR:
+		glRotated(90.0, 1.0, 0.0, 0.0);
+		glTranslated(transX, transZ, transY);
+		glScaled(xScale, zScale, yScale / abs(yScale));
+		drawTorsoHalfLinear(abs(yScale), 1.0, upperScale, middleScale, middleRatio);
+		break;
 	case SHAPE_BLADE:
 		glTranslated(transX, transY, transZ);
 		glScaled(xScale, yScale, zScale);
 		drawBlade(swordType);
+	case SHAPE_PARTIAL_CYLINDER:
+		glRotated(90.0, 1.0, 0.0, 0.0);
+		glTranslated(transX, transZ, transY);
+		glScaled(xScale, zScale, yScale / abs(yScale));
+		drawPartialCylinder(abs(yScale), 1.0, upperScale,startAngle,endAngle);
 	case PRIMITIVE_TRIANGLE:
 		//not used yet
 		break;
@@ -514,7 +698,7 @@ void ModelNode::Render(){
 
 //Manually initialize tree nodes
 void SaberModel::InitializeTree(){
-	upperTorso.nodeCreate(NULL, SHAPE_TORSO);
+	upperTorso.nodeCreate(NULL, SHAPE_TORSO_HALF_LINEAR);
 	rightUpperArm.nodeCreate(&upperTorso, SHAPE_TORSO);
 	rightLowerArm.nodeCreate(&rightUpperArm, PRIMITIVE_CYLINDER);
 	rightShoulder.nodeCreate(&rightUpperArm, SHAPE_TORSO_LINEAR);
@@ -530,6 +714,20 @@ void SaberModel::InitializeTree(){
 	leftLowerLeg.nodeCreate(&leftUpperLeg, PRIMITIVE_BOX);
 	rightUpperLeg.nodeCreate(&upperTorso, PRIMITIVE_BOX);
 	rightLowerLeg.nodeCreate(&rightUpperLeg, PRIMITIVE_BOX);
+	lowerArmor[0].nodeCreate(&lowerTorso, SHAPE_PARTIAL_CYLINDER);
+	lowerArmor[1].nodeCreate(&lowerArmor[0], SHAPE_PARTIAL_CYLINDER);
+	lowerArmor[2].nodeCreate(&lowerArmor[1], SHAPE_PARTIAL_CYLINDER); 
+	lowerArmor[3].nodeCreate(&lowerTorso, SHAPE_PARTIAL_CYLINDER);
+	lowerArmor[4].nodeCreate(&lowerArmor[3], SHAPE_PARTIAL_CYLINDER);
+	lowerArmor[5].nodeCreate(&lowerArmor[4], SHAPE_PARTIAL_CYLINDER);
+	lowerFront[0].nodeCreate(&lowerTorso, SHAPE_PARTIAL_CYLINDER);
+	lowerFront[1].nodeCreate(&lowerTorso, SHAPE_PARTIAL_CYLINDER);
+	lowerOuter[0].nodeCreate(&lowerTorso, SHAPE_PARTIAL_CYLINDER);
+	lowerOuter[1].nodeCreate(&lowerTorso, SHAPE_PARTIAL_CYLINDER);
+	lowerOuter[2].nodeCreate(&lowerTorso, SHAPE_PARTIAL_CYLINDER);
+	lowerOuter[3].nodeCreate(&lowerTorso, SHAPE_PARTIAL_CYLINDER);
+	lowerOuter[4].nodeCreate(&lowerTorso, SHAPE_PARTIAL_CYLINDER);
+	lowerOuter[5].nodeCreate(&lowerTorso, SHAPE_PARTIAL_CYLINDER);
 	treeRoot = &upperTorso;
 }
 
@@ -543,11 +741,11 @@ void SaberModel::CostumeSaber(){
 	upperTorso.setScale(0.32, 2.5, 0.2);
 	upperTorso.setStartPos(0.0, 0.0, 0.0);
 	upperTorso.setTrans(0.0, 0, 0.0);//center at neck
-	upperTorso.cylinderScale(2.5,3.0,0.4);
+	upperTorso.cylinderScale(2.5,3.5,0.4);
 
 	lowerTorso.setAngle(0.0, 0.0, 0.0);
-	lowerTorso.setColor(USE_COLOR_BLUE);
-	lowerTorso.setScale(0.8, 4.5, 0.5);
+	lowerTorso.setColor(USE_COLOR_WHITE);
+	lowerTorso.setScale(0.75, 4.5, 0.47);
 	lowerTorso.setStartPos(0.0, -2.5, 0.0);
 	lowerTorso.setTrans(0.0, 0.0, 0.0);//center at weist
 	lowerTorso.cylinderScale(4.0, 1.0, 0.5);
@@ -643,6 +841,60 @@ void SaberModel::CostumeSaber(){
 	rightLowerLeg.setScale(1.0, -2.0, 1.0);
 	rightLowerLeg.setStartPos(0.0, -2.2, 0.0);
 	rightLowerLeg.setTrans(-0.5, 0.0, -0.5);
+
+	
+	lowerArmor[0].setAngle(0.0, 0.0, 0.0);
+	lowerArmor[0].setColor(USE_COLOR_SILVER);
+	lowerArmor[0].setScale(0.8, 1.0, 0.5);
+	lowerArmor[0].setStartPos(0.0, 0.0, 0.0);
+	lowerArmor[0].setTrans(0.0, 0.0, 0.0);//center at weist
+	lowerArmor[0].cylinderScale(1.8, 1.0, 0.5);
+	lowerArmor[0].setStartAndEndAngle(-70, 250);
+
+	lowerArmor[1].setAngle(0.0, 0.0, 0.0);
+	lowerArmor[1].setColor(USE_COLOR_SILVER);
+	lowerArmor[1].setScale(1.5, 1.0, 0.9);
+	lowerArmor[1].setStartPos(0.0, -1.05, 0.0);
+	lowerArmor[1].setTrans(0.0, 0.0, 0.0);
+	lowerArmor[1].cylinderScale(1.4, 1.0, 0.5);
+	lowerArmor[1].setStartAndEndAngle(-70, 250);
+
+	lowerArmor[2].setAngle(0.0, 0.0, 0.0);
+	lowerArmor[2].setColor(USE_COLOR_SILVER);
+	lowerArmor[2].setScale(2.1, 1.0, 1.26);
+	lowerArmor[2].setStartPos(0.0, -1.05, 0.0);
+	lowerArmor[2].setTrans(0.0, 0.0, 0.0);
+	lowerArmor[2].cylinderScale(1.3, 1.0, 0.5);
+	lowerArmor[2].setStartAndEndAngle(-70, 250);
+
+	lowerArmor[3].disableNode();
+	lowerArmor[4].disableNode();
+	lowerArmor[5].disableNode();
+
+	lowerFront[0].setAngle(0.0, 0.0, 0.0);
+	lowerFront[0].setColor(USE_COLOR_LIGHT_BLUE);
+	lowerFront[0].setScale(0.8, 3.5, 0.5);
+	lowerFront[0].setStartPos(0.0, 0.0, 0.0);
+	lowerFront[0].setTrans(0.0, 0.0, 0.0);
+	lowerFront[0].cylinderScale(3.5, 1.0, 0.5);
+	lowerFront[0].setStartAndEndAngle(250, 290);
+
+	lowerFront[1].disableNode();
+
+	lowerOuter[0].setAngle(0.0, 0.0, 0.0);
+	lowerOuter[0].setColor(USE_COLOR_BLUE);
+	lowerOuter[0].setScale(0.8, 4.3, 0.5);
+	lowerOuter[0].setStartPos(0.0, 0.0, 0.0);
+	lowerOuter[0].setTrans(0.0, 0.0, 0.0);
+	lowerOuter[0].cylinderScale(3.7, 1.0, 0.5);
+	lowerOuter[0].setStartAndEndAngle(-75, 255);
+
+	lowerOuter[1].disableNode();
+	lowerOuter[2].disableNode();
+	lowerOuter[3].disableNode();
+	lowerOuter[4].disableNode();
+	lowerOuter[5].disableNode();
+	
 }
 void SaberModel::CostumeSaberAlter(){
 	CostumeSaber();
@@ -662,6 +914,65 @@ void SaberModel::CostumeSaberAlter(){
 	rightShoulder.setColor(USE_COLOR_DARK);
 	leftShoulder.cylinderScale(1.0, 1.8, 0.4);
 	rightShoulder.cylinderScale(1.0, 1.8, 0.4);
+
+	lowerTorso.setAngle(0.0, 0.0, 0.0);
+	lowerTorso.setColor(USE_COLOR_WHITE);
+	lowerTorso.setScale(0.75, 4.5, 0.47);
+	lowerTorso.setStartPos(0.0, -2.5, 0.0);
+	lowerTorso.setTrans(0.0, 0.0, 0.0);//center at weist
+	lowerTorso.cylinderScale(4.0, 1.0, 0.5);
+
+	lowerArmor[0].setAngle(0.0, 0.0, 0.0);
+	lowerArmor[0].setColor(USE_COLOR_SILVER);
+	lowerArmor[0].setScale(0.8, 1.0, 0.5);
+	lowerArmor[0].setStartPos(0.0, 0.0, 0.0);
+	lowerArmor[0].setTrans(0.0, 0.0, 0.0);//center at weist
+	lowerArmor[0].cylinderScale(1.8, 1.0, 0.5);
+	lowerArmor[0].setStartAndEndAngle(-70, 250);
+
+	lowerArmor[1].setAngle(0.0, 0.0, 0.0);
+	lowerArmor[1].setColor(USE_COLOR_SILVER);
+	lowerArmor[1].setScale(1.5, 1.0, 0.9);
+	lowerArmor[1].setStartPos(0.0, -1.05, 0.0);
+	lowerArmor[1].setTrans(0.0, 0.0, 0.0);
+	lowerArmor[1].cylinderScale(1.4, 1.0, 0.5);
+	lowerArmor[1].setStartAndEndAngle(-70, 250);
+
+	lowerArmor[2].setAngle(0.0, 0.0, 0.0);
+	lowerArmor[2].setColor(USE_COLOR_SILVER);
+	lowerArmor[2].setScale(2.1, 1.0, 1.26);
+	lowerArmor[2].setStartPos(0.0, -1.05, 0.0);
+	lowerArmor[2].setTrans(0.0, 0.0, 0.0);
+	lowerArmor[2].cylinderScale(1.3, 1.0, 0.5);
+	lowerArmor[2].setStartAndEndAngle(-70, 250);
+
+	lowerFront[0].setAngle(0.0, 0.0, 0.0);
+	lowerFront[0].setColor(USE_COLOR_LIGHT_BLUE);
+	lowerFront[0].setScale(0.8, 3.5, 0.5);
+	lowerFront[0].setStartPos(0.0, 0.0, 0.0);
+	lowerFront[0].setTrans(0.0, 0.0, 0.0);
+	lowerFront[0].cylinderScale(3.5, 1.0, 0.5);
+	lowerFront[0].setStartAndEndAngle(250, 290);
+
+	lowerOuter[0].setAngle(0.0, 0.0, 0.0);
+	lowerOuter[0].setColor(USE_COLOR_BLUE);
+	lowerOuter[0].setScale(0.8, 4.3, 0.5);
+	lowerOuter[0].setStartPos(0.0, 0.0, 0.0);
+	lowerOuter[0].setTrans(0.0, 0.0, 0.0);
+	lowerOuter[0].cylinderScale(3.7, 1.0, 0.5);
+	lowerOuter[0].setStartAndEndAngle(-75, 255);
+
+	lowerArmor[3].disableNode();
+	lowerArmor[4].disableNode();
+	lowerArmor[5].disableNode();
+
+	lowerFront[1].disableNode();
+
+	lowerOuter[1].disableNode();
+	lowerOuter[2].disableNode();
+	lowerOuter[3].disableNode();
+	lowerOuter[4].disableNode();
+	lowerOuter[5].disableNode();
 }
 void SaberModel::CostumeSaberLily(){
 	CostumeSaber();
@@ -684,6 +995,137 @@ void SaberModel::CostumeSaberLily(){
 	rightShoulder.setColor(USE_COLOR_WHITE);
 	leftShoulder.cylinderScale(1.0, 1.2, 0.4);
 	rightShoulder.cylinderScale(1.0, 1.2, 0.4);
+
+	lowerTorso.setAngle(0.0, 0.0, 0.0);
+	lowerTorso.setColor(USE_COLOR_WHITE);
+	lowerTorso.setScale(0.75, 4.5, 0.47);
+	lowerTorso.setStartPos(0.0, -2.5, 0.0);
+	lowerTorso.setTrans(0.0, 0.0, 0.0);//center at weist
+	lowerTorso.cylinderScale(4.0, 1.0, 0.5);
+
+	lowerArmor[3].enableNode();
+	lowerArmor[4].enableNode();
+	lowerArmor[5].enableNode();
+
+	lowerFront[1].enableNode();
+
+	lowerOuter[1].enableNode();
+	lowerOuter[2].enableNode();
+	lowerOuter[3].enableNode();
+	lowerOuter[4].enableNode();
+	lowerOuter[5].enableNode();
+
+	lowerArmor[0].setAngle(0.0, 0.0, 0.0);
+	lowerArmor[0].setColor(USE_COLOR_SILVER);
+	lowerArmor[0].setScale(0.8, 0.8, 0.5);
+	lowerArmor[0].setStartPos(0.0, 0.0, 0.0);
+	lowerArmor[0].setTrans(0.0, 0.0, 0.0);//center at weist
+	lowerArmor[0].cylinderScale(2.3, 1.0, 0.5);
+	lowerArmor[0].setStartAndEndAngle(-50, 50);
+
+	lowerArmor[1].setAngle(0.0, 0.0, 0.0);
+	lowerArmor[1].setColor(USE_COLOR_SILVER);
+	lowerArmor[1].setScale(1.0, 0.8, 0.6);
+	lowerArmor[1].setStartPos(0.0, -0.5, 0.0);
+	lowerArmor[1].setTrans(0.0, 0.0, 0.0);
+	lowerArmor[1].cylinderScale(2.0, 1.0, 0.5);
+	lowerArmor[1].setStartAndEndAngle(-50, 50);
+
+	lowerArmor[2].setAngle(0.0, 0.0, 0.0);
+	lowerArmor[2].setColor(USE_COLOR_SILVER);
+	lowerArmor[2].setScale(1.3, 0.8, 0.7);
+	lowerArmor[2].setStartPos(0.0, -0.5, 0.0);
+	lowerArmor[2].setTrans(0.0, 0.0, 0.0);
+	lowerArmor[2].cylinderScale(1.8, 1.0, 0.5);
+	lowerArmor[2].setStartAndEndAngle(-50, 50);
+
+	lowerArmor[3].setAngle(0.0, 0.0, 0.0);
+	lowerArmor[3].setColor(USE_COLOR_SILVER);
+	lowerArmor[3].setScale(0.8, 0.8, 0.5);
+	lowerArmor[3].setStartPos(0.0, 0.0, 0.0);
+	lowerArmor[3].setTrans(0.0, 0.0, 0.0);//center at weist
+	lowerArmor[3].cylinderScale(2.3, 1.0, 0.5);
+	lowerArmor[3].setStartAndEndAngle(130, 230);
+
+	lowerArmor[4].setAngle(0.0, 0.0, 0.0);
+	lowerArmor[4].setColor(USE_COLOR_SILVER);
+	lowerArmor[4].setScale(1.0, 0.8, 0.6);
+	lowerArmor[4].setStartPos(0.0, -0.5, 0.0);
+	lowerArmor[4].setTrans(0.0, 0.0, 0.0);
+	lowerArmor[4].cylinderScale(2.0, 1.0, 0.5);
+	lowerArmor[4].setStartAndEndAngle(130, 230);
+
+	lowerArmor[5].setAngle(0.0, 0.0, 0.0);
+	lowerArmor[5].setColor(USE_COLOR_SILVER);
+	lowerArmor[5].setScale(1.3, 0.8, 0.7);
+	lowerArmor[5].setStartPos(0.0, -0.5, 0.0);
+	lowerArmor[5].setTrans(0.0, 0.0, 0.0);
+	lowerArmor[5].cylinderScale(1.8, 1.0, 0.5);
+	lowerArmor[5].setStartAndEndAngle(130, 230);
+
+	lowerFront[0].setAngle(0.0, 0.0, 0.0);
+	lowerFront[0].setColor(USE_COLOR_BLACK);
+	lowerFront[0].setScale(0.8, 1.8, 0.5);
+	lowerFront[0].setStartPos(0.0, 0.0, 0.0);
+	lowerFront[0].setTrans(0.0, 0.0, 0.0);
+	lowerFront[0].cylinderScale(2.4, 1.0, 0.5);
+	lowerFront[0].setStartAndEndAngle(250, 265);
+
+	lowerFront[1].setAngle(0.0, 0.0, 0.0);
+	lowerFront[1].setColor(USE_COLOR_BLACK);
+	lowerFront[1].setScale(0.8, 1.8, 0.5);
+	lowerFront[1].setStartPos(0.0, 0.0, 0.0);
+	lowerFront[1].setTrans(0.0, 0.0, 0.0);
+	lowerFront[1].cylinderScale(2.4, 1.0, 0.5);
+	lowerFront[1].setStartAndEndAngle(275, 290);
+
+	lowerOuter[0].setAngle(0.0, 0.0, 0.0);
+	lowerOuter[0].setColor(USE_COLOR_SILVER);
+	lowerOuter[0].setScale(0.8, 3.8, 0.5);
+	lowerOuter[0].setStartPos(0.0, 0.0, 0.0);
+	lowerOuter[0].setTrans(0.0, 0.0, 0.0);
+	lowerOuter[0].cylinderScale(3.6, 1.0, 0.5);
+	lowerOuter[0].setStartAndEndAngle(-75, -45);
+
+	lowerOuter[1].setAngle(0.0, 0.0, 0.0);
+	lowerOuter[1].setColor(USE_COLOR_SILVER);
+	lowerOuter[1].setScale(0.8, 4.2, 0.5);
+	lowerOuter[1].setStartPos(0.0, 0.0, 0.0);
+	lowerOuter[1].setTrans(0.0, 0.0, 0.0);
+	lowerOuter[1].cylinderScale(3.8, 1.0, 0.5);
+	lowerOuter[1].setStartAndEndAngle(-35, 35);
+
+	lowerOuter[2].setAngle(0.0, 0.0, 0.0);
+	lowerOuter[2].setColor(USE_COLOR_SILVER);
+	lowerOuter[2].setScale(0.8, 3.8, 0.5);
+	lowerOuter[2].setStartPos(0.0, 0.0, 0.0);
+	lowerOuter[2].setTrans(0.0, 0.0, 0.0);
+	lowerOuter[2].cylinderScale(3.6, 1.0, 0.5);
+	lowerOuter[2].setStartAndEndAngle(45,75);
+
+	lowerOuter[3].setAngle(0.0, 0.0, 0.0);
+	lowerOuter[3].setColor(USE_COLOR_SILVER);
+	lowerOuter[3].setScale(0.8, 3.8, 0.5);
+	lowerOuter[3].setStartPos(0.0, 0.0, 0.0);
+	lowerOuter[3].setTrans(0.0, 0.0, 0.0);
+	lowerOuter[3].cylinderScale(3.6, 1.0, 0.5);
+	lowerOuter[3].setStartAndEndAngle(105, 135);
+
+	lowerOuter[4].setAngle(0.0, 0.0, 0.0);
+	lowerOuter[4].setColor(USE_COLOR_SILVER);
+	lowerOuter[4].setScale(0.8, 4.2, 0.5);
+	lowerOuter[4].setStartPos(0.0, 0.0, 0.0);
+	lowerOuter[4].setTrans(0.0, 0.0, 0.0);
+	lowerOuter[4].cylinderScale(3.8, 1.0, 0.5);
+	lowerOuter[4].setStartAndEndAngle(145, 215);
+
+	lowerOuter[5].setAngle(0.0, 0.0, 0.0);
+	lowerOuter[5].setColor(USE_COLOR_SILVER);
+	lowerOuter[5].setScale(0.8, 3.8, 0.5);
+	lowerOuter[5].setStartPos(0.0, 0.0, 0.0);
+	lowerOuter[5].setTrans(0.0, 0.0, 0.0);
+	lowerOuter[5].cylinderScale(3.6, 1.0, 0.5);
+	lowerOuter[5].setStartAndEndAngle(225, 255);
 
 }
 

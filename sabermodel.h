@@ -11,7 +11,8 @@ using namespace std;
 
 #include "modelerglobals.h"
 
-#define USE_COLOR_BLUE 54.0/255.0, 86.0/255.0, 128.0/255.0
+#define USE_COLOR_BLUE 37.0/255.0, 69.0/255.0, 130.0/255.0
+#define USE_COLOR_LIGHT_BLUE 71.0/255.0,66.0/255.0,157.0/255.0
 #define USE_COLOR_SILVER 238.0/255.0, 238.0 / 255.0, 236.0/255.0
 #define USE_COLOR_GOLD 252.0/255.0,247.0/255.0,135.0/255.0
 #define USE_COLOR_EXCALIBUR 254.0/255.0,245.0/255.0,226.0/255.0
@@ -26,8 +27,10 @@ enum{
 	PRIMITIVE_SPHERE,
 	PRIMITIVE_CYLINDER,
 	PRIMITIVE_CYLINDER_NO_DISK,
+	SHAPE_PARTIAL_CYLINDER,
 	SHAPE_TORSO,
 	SHAPE_TORSO_LINEAR,
+	SHAPE_TORSO_HALF_LINEAR,
 	PRIMITIVE_TRIANGLE,
 	SHAPE_BLADE,
 	PRIMITIVE_TYPES
@@ -58,6 +61,8 @@ private:
 	GLdouble colorRed, colorGreen, colorBlue;
 	GLdouble colorAlpha;
 	GLdouble transX, transY, transZ;
+	GLdouble startAngle, endAngle;
+	bool disabled;
 	string rotateOrder;
 public:
 	ModelNode();
@@ -70,6 +75,9 @@ public:
 	void setSwordType(int ty);
 	void setTrans(GLdouble X, GLdouble Y, GLdouble Z);
 	void cylinderScale(GLdouble theUpperScale, GLdouble theMiddleScale, GLdouble theMiddleRatio);
+	void setStartAndEndAngle(GLdouble theStartAngle, GLdouble theEndAngle);
+	void enableNode();
+	void disableNode();
 	void Render();
 };
 
@@ -101,4 +109,5 @@ private:
 	ModelNode upperTorso, lowerTorso, leftUpperArm, leftLowerArm, rightUpperArm, rightLowerArm;
 	ModelNode excaliburGrip, excaliburGuard, excaliburBlade, head, leftUpperLeg, leftLowerLeg, rightUpperLeg, rightLowerLeg;
 	ModelNode leftShoulder, rightShoulder;
+	ModelNode lowerArmor[6],lowerFront[2],lowerOuter[6];
 };
