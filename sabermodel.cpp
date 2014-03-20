@@ -459,7 +459,7 @@ void drawBlade(int swordType){
 		setDiffuseColor(USE_COLOR_BLACK);
 		break;
 	case TYPE_CALIBURN:
-		setDiffuseColor(USE_COLOR_GOLD);
+		setDiffuseColor(USE_COLOR_DARK_GOLD);
 		break;
 	}
 	//Up
@@ -487,16 +487,16 @@ void drawBlade(int swordType){
 		setDiffuseColor(USE_COLOR_BLACK);
 		break;
 	case TYPE_CALIBURN:
-		setDiffuseColor(USE_COLOR_BLUE);
+		setDiffuseColor(USE_COLOR_GOLD);
 		break;
 	}
 	//up
-	drawTriangle(-8.0, 46.0, 1.0, 8.0, 46.0, 1.0, 0.0, 53.0, 1.0);
+	drawTriangle(-8.0, 46.0, 1.0, 8.0, 46.0, 1.0, 0.0, 51.0, 1.0);
 	
 	drawTriangle(-8.0, 0.0, 1.0, 8.0, 46.0, 1.0, -8.0, 46.0, 1.0);
 	drawTriangle(-8.0, 0.0, 1.0, 8.0, 0.0, 1.0, 8.0, 46.0, 1.0);
 	//down
-	drawTriangle(-8.0, 46.0, -1.0, 0.0, 53.0, -1.0, 8.0, 46.0, -1.0);
+	drawTriangle(-8.0, 46.0, -1.0, 0.0, 51.0, -1.0, 8.0, 46.0, -1.0);
 
 	drawTriangle(-8.0, 0.0, -1.0, -8.0, 46.0, -1.0, 8.0, 46.0, -1.0);
 	drawTriangle(-8.0, 0.0, -1.0, 8.0, 46.0, -1.0, 8.0, 0.0, -1.0);
@@ -508,14 +508,14 @@ void drawBlade(int swordType){
 		setDiffuseColor(USE_COLOR_RED);
 		break;
 	case TYPE_CALIBURN:
-		setDiffuseColor(USE_COLOR_BLUE);
+		setDiffuseColor(USE_COLOR_GOLD);
 		break;
 	}
-	drawTriangle(-8.0, 46.0, 1.0, 0.0, 53.0, 1.0, 0.0, 55.0, 1.0);
-	drawTriangle(0.0, 55.0, 1.0, 0.0, 53.0, 1.0, 8.0, 46.0, 1.0);
+	drawTriangle(-8.0, 46.0, 1.0, 0.0, 51.0, 1.0, 0.0, 55.0, 1.0);
+	drawTriangle(0.0, 55.0, 1.0, 0.0, 51.0, 1.0, 8.0, 46.0, 1.0);
 
-	drawTriangle(-8.0, 46.0, -1.0, 0.0, 55.0, -1.0, 0.0, 53.0, -1.0);
-	drawTriangle(0.0, 55.0, -1.0, 8.0, 46.0, -1.0, 0.0, 53.0, -1.0);
+	drawTriangle(-8.0, 46.0, -1.0, 0.0, 55.0, -1.0, 0.0, 51.0, -1.0);
+	drawTriangle(0.0, 55.0, -1.0, 8.0, 46.0, -1.0, 0.0, 51.0, -1.0);
 
 	//Fourth part:Side
 	switch (swordType){
@@ -544,6 +544,41 @@ void drawBlade(int swordType){
 
 	drawTriangle(8.0, 18.0, -1.0, 13.5, 23.0, 0.0, 13.5, 0.0, 0.0);
 	drawTriangle(8.0, 18.0, -1.0, 13.5, 0.0, 0.0, 8.0, 0.0, -1.0);
+}
+
+void drawFoot(){
+	drawPartialCylinder(2.0, 0.5, 0, 0, 180);
+	drawTriangle(-0.5, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 2.0);
+	glPushMatrix();
+	glRotated(-90.0, 1.0, 0.0, 0.0);
+	drawTorso(1.5, 0.52, 0.35, 0.4, 0.4);
+	glPopMatrix();
+}
+
+void drawSwordGuard(){
+	glPushMatrix();
+	glTranslated(-1.0, 0.0, -1.0);
+	glRotated(-30.0, 0.0, 0.0, 1.0);
+	drawBox(-2.0, 1.0, 2.0);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslated(1.0, 0.0, -1.0);
+	glRotated(30.0, 0.0, 0.0, 1.0);
+	drawBox(2.0, 1.0, 2.0);
+	glPopMatrix();
+
+	drawTriangle(-1.0, 0.0, -1.0, -0.5, 0.866, -1.0, 1.0, 0.0, -1.0);
+	drawTriangle(1.0, 0.0, -1.0, -0.5, 0.866, -1.0, 0.5, 0.866, -1.0);
+
+	drawTriangle(-1.0, 0.0, 1.0, 1.0, 0.0, 1.0, -0.5, 0.866, 1.0);
+	drawTriangle(1.0, 0.0, 1.0, 0.5, 0.866, 1.0, -0.5, 0.866, 1.0);
+
+	drawTriangle(0.5, 0.866, 1.0, -0.5, 0.866, -1.0, -0.5, 0.866, 1.0);
+	drawTriangle(0.5, 0.866, 1.0, 0.5, 0.866, -1.0, -0.5, 0.866, -1.0);
+
+	drawTriangle(1.0, 0.0, 1.0, -1.0, 0.0, 1.0, -1.0, 0.0, -1.0);
+	drawTriangle(1.0, 0.0, 1.0, -1.0, 0.0, -1.0, 1.0, 0.0, -1.0);
 }
 
 ModelNode::ModelNode(){
@@ -675,13 +710,22 @@ void ModelNode::Render(){
 		glTranslated(transX, transY, transZ);
 		glScaled(xScale, yScale, zScale);
 		drawBlade(swordType);
+		break;
 	case SHAPE_PARTIAL_CYLINDER:
 		glRotated(90.0, 1.0, 0.0, 0.0);
 		glTranslated(transX, transZ, transY);
 		glScaled(xScale, zScale, yScale / abs(yScale));
 		drawPartialCylinder(abs(yScale), 1.0, upperScale,startAngle,endAngle);
-	case PRIMITIVE_TRIANGLE:
-		//not used yet
+		break;
+	case SHAPE_FOOT:
+		glTranslated(transX, transY, transZ);
+		glScaled(xScale, yScale, zScale);
+		drawFoot();
+		break;
+	case SHAPE_GUARD:
+		glTranslated(transX, transY, transZ);
+		glScaled(xScale, yScale, zScale);
+		drawSwordGuard();
 		break;
 	}
 	glPopMatrix();
@@ -705,15 +749,20 @@ void SaberModel::InitializeTree(){
 	leftUpperArm.nodeCreate(&upperTorso, SHAPE_TORSO);
 	leftLowerArm.nodeCreate(&leftUpperArm, PRIMITIVE_CYLINDER);
 	leftShoulder.nodeCreate(&leftUpperArm, SHAPE_TORSO_LINEAR);
-	excaliburGrip.nodeCreate(&rightLowerArm, SHAPE_TORSO);
-	excaliburGuard.nodeCreate(&excaliburGrip, PRIMITIVE_BOX);
+	excaliburGrip.nodeCreate(&rightHand, SHAPE_TORSO);
+	excaliburGuard.nodeCreate(&excaliburGrip, SHAPE_GUARD);
 	excaliburBlade.nodeCreate(&excaliburGuard, SHAPE_BLADE);
 	lowerTorso.nodeCreate(&upperTorso, PRIMITIVE_CYLINDER_NO_DISK);
 	head.nodeCreate(&upperTorso, PRIMITIVE_SPHERE);
-	leftUpperLeg.nodeCreate(&upperTorso, PRIMITIVE_BOX);
-	leftLowerLeg.nodeCreate(&leftUpperLeg, PRIMITIVE_BOX);
-	rightUpperLeg.nodeCreate(&upperTorso, PRIMITIVE_BOX);
-	rightLowerLeg.nodeCreate(&rightUpperLeg, PRIMITIVE_BOX);
+	leftUpperLeg.nodeCreate(&lowerTorso, SHAPE_TORSO);
+	leftLowerLeg.nodeCreate(&leftUpperLeg, SHAPE_TORSO);
+	rightUpperLeg.nodeCreate(&lowerTorso, SHAPE_TORSO);
+	rightLowerLeg.nodeCreate(&rightUpperLeg, SHAPE_TORSO);
+	leftFoot.nodeCreate(&leftLowerLeg, SHAPE_FOOT);
+	rightFoot.nodeCreate(&rightLowerLeg, SHAPE_FOOT);
+	leftHand.nodeCreate(&leftLowerArm, SHAPE_TORSO);
+	rightHand.nodeCreate(&rightLowerArm, SHAPE_TORSO);
+
 	lowerArmor[0].nodeCreate(&lowerTorso, SHAPE_PARTIAL_CYLINDER);
 	lowerArmor[1].nodeCreate(&lowerArmor[0], SHAPE_PARTIAL_CYLINDER);
 	lowerArmor[2].nodeCreate(&lowerArmor[1], SHAPE_PARTIAL_CYLINDER); 
@@ -759,10 +808,17 @@ void SaberModel::CostumeSaber(){
 
 	leftLowerArm.setAngle(0.0, 0.0, 0.0);
 	leftLowerArm.setColor(USE_COLOR_SILVER);
-	leftLowerArm.setScale(0.5, 2.3, 0.5);
+	leftLowerArm.setScale(0.5, 1.8, 0.5);
 	leftLowerArm.setStartPos(0.0, -2.0, 0.0);
 	leftLowerArm.setTrans(0.0, 0.0, 0.0);
 	leftLowerArm.cylinderScale(0.6, 1.0, 0.5);
+
+	leftHand.setAngle(0.0, 0.0, 0.0);
+	leftHand.setColor(USE_COLOR_SILVER);
+	leftHand.setScale(0.3, 0.5, 0.3);
+	leftHand.setStartPos(0.0, -1.8, 0.0);
+	leftHand.setTrans(0.0, 0.0, 0.0);
+	leftHand.cylinderScale(0.6, 0.8, 0.7);
 
 	leftShoulder.setAngle(0.0, 0.0, -15.0);
 	leftShoulder.setColor(USE_COLOR_BLUE);
@@ -780,10 +836,18 @@ void SaberModel::CostumeSaber(){
 
 	rightLowerArm.setAngle(0.0, 0.0, 0.0);
 	rightLowerArm.setColor(USE_COLOR_SILVER);
-	rightLowerArm.setScale(0.5, 2.3, 0.5);
+	rightLowerArm.setScale(0.5, 1.8, 0.5);
 	rightLowerArm.setStartPos(0.0, -2.0, 0.0);
 	rightLowerArm.setTrans(0.0, 0.0, 0.0);
-	rightLowerArm.cylinderScale(0.6, 1.0, 0.5);
+	rightLowerArm.cylinderScale(0.6, 1.0, 0.5); 
+	
+	rightHand.setAngle(0.0, 0.0, 0.0);
+	rightHand.setColor(USE_COLOR_SILVER);
+	rightHand.setScale(0.3, 0.5, 0.3);
+	rightHand.setStartPos(0.0, -1.8, 0.0);
+	rightHand.setTrans(0.0, 0.0, 0.0);
+	rightHand.cylinderScale(0.6, 0.8, 0.7);
+
 
 	rightShoulder.setAngle(0.0, 0.0, 15.0);
 	rightShoulder.setColor(USE_COLOR_BLUE);
@@ -794,53 +858,70 @@ void SaberModel::CostumeSaber(){
 
 	excaliburGuard.setAngle(0.0, 0.0, 0.0);
 	excaliburGuard.setColor(USE_COLOR_GOLD);
-	excaliburGuard.setScale(2.0, 0.5, 0.4);
-	excaliburGuard.setStartPos(0.0, -0.25, 0.0);
-	excaliburGuard.setTrans(-1.0, -0.25, -0.2);
+	excaliburGuard.setScale(0.4, -0.4, 0.08);
+	excaliburGuard.setStartPos(0.0, 0.0, 0.0);
+	excaliburGuard.setTrans(0.0, 0.0, 0.0);
 
 	excaliburBlade.setAngle(0.0, 0.0, 0.0);
 	excaliburBlade.setColor(USE_COLOR_EXCALIBUR);
-	excaliburBlade.setScale(0.4, -4.0, 0.1);
-	excaliburBlade.setStartPos(0.0, -0.25, 0.0);
+	excaliburBlade.setScale(0.4, -4.0, 0.06);
+	excaliburBlade.setStartPos(0.0, -0.35, 0.0);
 	excaliburBlade.setTrans(0.0, 0.0, 0.0);
 	excaliburBlade.setSwordType(TYPE_EXCALIBUR);
 
 	excaliburGrip.setAngle(0.0, 0.0, 0.0);
 	excaliburGrip.setColor(USE_COLOR_BLUE);
-	excaliburGrip.setScale(0.2, -1.0, 0.2);
-	excaliburGrip.setStartPos(0.0, -2.5, 0.0);
-	excaliburGrip.setTrans(0.0, 0.0, -0.0);
-	excaliburGrip.cylinderScale(0.8, 0.7, 0.5);
+	excaliburGrip.setScale(0.1, -1.0, 0.1);
+	excaliburGrip.setStartPos(0.0, -0.5, 0.0);
+	excaliburGrip.setTrans(0.0, 0.0, 0.0);
+	excaliburGrip.cylinderScale(0.8, 0.5, 0.5);
 
 	head.setAngle(0.0, 0.0, 0.0);
-	head.setColor(USE_COLOR_GOLD);
+	head.setColor(USE_COLOR_BODY);
 	head.setScale(1.0, 1.0, 1.0);
 	head.setStartPos(0.0, 0.7, 0.0);
 	head.setTrans(0.0, 0.0, 0.0);
 
-	leftUpperLeg.setAngle(0.0, 0.0, 0.0);
+	leftUpperLeg.setAngle(0.0, 0.0, -10.0);
 	leftUpperLeg.setColor(USE_COLOR_BLUE);
-	leftUpperLeg.setScale(1.0, -2.0, 1.0);
-	leftUpperLeg.setStartPos(-0.7, -4.2, 0.0);
-	leftUpperLeg.setTrans(-0.5, 0.0, -0.5);
+	leftUpperLeg.setScale(0.4, 2.8, 0.4);
+	leftUpperLeg.setStartPos(-0.4, -0.4, 0.0);
+	leftUpperLeg.setTrans(0.0, 0.0, 0.0);
+	leftUpperLeg.cylinderScale(0.75, 1.0, 0.6);
 
-	rightUpperLeg.setAngle(0.0, 0.0, 0.0);
+	rightUpperLeg.setAngle(0.0, 0.0, 10.0);
 	rightUpperLeg.setColor(USE_COLOR_BLUE);
-	rightUpperLeg.setScale(1.0, -2.0, 1.0);
-	rightUpperLeg.setStartPos(0.7, -4.2, 0.0);
-	rightUpperLeg.setTrans(-0.5, 0.0, -0.5);
+	rightUpperLeg.setScale(0.4, 2.8, 0.4);
+	rightUpperLeg.setStartPos(0.4, -0.4, 0.0);
+	rightUpperLeg.setTrans(0.0, 0.0, 0.0);
+	rightUpperLeg.cylinderScale(0.75, 1.0, 0.6);
 
-	leftLowerLeg.setAngle(0.0, 0.0, 0.0);
+	leftLowerLeg.setAngle(0.0, 0.0, 10.0);
 	leftLowerLeg.setColor(USE_COLOR_SILVER);
-	leftLowerLeg.setScale(1.0, -2.0, 1.0);
-	leftLowerLeg.setStartPos(0.0, -2.2, 0.0);
-	leftLowerLeg.setTrans(-0.5, 0.0, -0.5);
+	leftLowerLeg.setScale(0.35, 1.5, 0.35);
+	leftLowerLeg.setStartPos(0.0, -2.8, 0.0);
+	leftLowerLeg.setTrans(0.0, 0.0, 0.0);
+	leftLowerLeg.cylinderScale(0.8, 0.9, 0.6);
 
-	rightLowerLeg.setAngle(0.0, 0.0, 0.0);
+	rightLowerLeg.setAngle(0.0, 0.0, -10.0);
 	rightLowerLeg.setColor(USE_COLOR_SILVER);
-	rightLowerLeg.setScale(1.0, -2.0, 1.0);
-	rightLowerLeg.setStartPos(0.0, -2.2, 0.0);
-	rightLowerLeg.setTrans(-0.5, 0.0, -0.5);
+	rightLowerLeg.setScale(0.35, 1.5, 0.35);
+	rightLowerLeg.setStartPos(0.0, -2.8, 0.0);
+	rightLowerLeg.setTrans(0.0, 0.0, 0.0);
+	rightLowerLeg.cylinderScale(0.8, 0.9, 0.6);
+
+	leftFoot.setAngle(0.0, 180.0, 0.0);
+	leftFoot.setColor(USE_COLOR_SILVER);
+	leftFoot.setScale(0.8, 0.7, 0.8);
+	leftFoot.setStartPos(0.0, -2.5, 0.0);
+	leftFoot.setTrans(0.0, 0.0, 0.0);
+
+	rightFoot.setAngle(0.0, 180.0, 0.0);
+	rightFoot.setColor(USE_COLOR_SILVER);
+	rightFoot.setScale(0.8, 0.7, 0.8);
+	rightFoot.setStartPos(0.0, -2.5, 0.0);
+	rightFoot.setTrans(0.0, 0.0, 0.0);
+
 
 	
 	lowerArmor[0].setAngle(0.0, 0.0, 0.0);
@@ -950,6 +1031,12 @@ void SaberModel::CostumeSaberAlter(){
 	rightLowerLeg.setColor(USE_COLOR_DARK_ARMOR);
 	leftShoulder.setColor(USE_COLOR_DARK_CLOTHES);
 	rightShoulder.setColor(USE_COLOR_DARK_CLOTHES);
+	leftHand.setColor(USE_COLOR_DARK_ARMOR);
+	rightHand.setColor(USE_COLOR_DARK_ARMOR);
+	leftFoot.setColor(USE_COLOR_DARK_ARMOR);
+	rightFoot.setColor(USE_COLOR_DARK_ARMOR);
+	excaliburGrip.setColor(USE_COLOR_DARK);
+	excaliburGuard.setColor(USE_COLOR_DARK);
 	leftShoulder.cylinderScale(1.0, 1.8, 0.4);
 	rightShoulder.cylinderScale(1.0, 1.8, 0.4);
 
@@ -1044,10 +1131,17 @@ void SaberModel::CostumeSaberLily(){
 	leftLowerLeg.setColor(USE_COLOR_SILVER);
 	rightUpperLeg.setColor(USE_COLOR_WHITE);
 	rightLowerLeg.setColor(USE_COLOR_SILVER);
-	leftShoulder.setColor(USE_COLOR_WHITE);
-	rightShoulder.setColor(USE_COLOR_WHITE);
-	leftShoulder.cylinderScale(1.0, 1.2, 0.4);
-	rightShoulder.cylinderScale(1.0, 1.2, 0.4);
+	leftShoulder.setColor(USE_COLOR_BODY);
+	rightShoulder.setColor(USE_COLOR_BODY);
+	leftHand.setColor(USE_COLOR_SILVER);
+	rightHand.setColor(USE_COLOR_SILVER);
+	leftFoot.setColor(USE_COLOR_SILVER);
+	rightFoot.setColor(USE_COLOR_SILVER);
+	excaliburGuard.setColor(USE_COLOR_DARK_GOLD);
+	leftShoulder.setScale(0.3, 1.0, 0.3);
+	rightShoulder.setScale(0.3, 1.0, 0.3);
+	leftShoulder.cylinderScale(1.05, 1.2, 0.4);
+	rightShoulder.cylinderScale(1.05, 1.2, 0.4);
 
 	lowerTorso.setAngle(0.0, 0.0, 0.0);
 	lowerTorso.setColor(USE_COLOR_WHITE);

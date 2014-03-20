@@ -23,6 +23,8 @@ using namespace std;
 #define USE_COLOR_DARK_ARMOR 83.0/255.0, 89.0/255.0, 124.0/255.0
 #define USE_COLOR_RED 234.0/255.0,65.0/255.0,43.0/255.0
 #define USE_COLOR_WHITE 254.0/255.0,254.0/255.0,254.0/255.0
+#define USE_COLOR_BODY 255.0/255.0, 238.0/255.0, 212.0/255.0
+#define USE_COLOR_DARK_GOLD 211.0/255.0,197.0/255.0,162.0/255.0
 
 const double esp = 1e-6;
 enum{
@@ -36,6 +38,8 @@ enum{
 	SHAPE_TORSO_HALF_LINEAR,
 	PRIMITIVE_TRIANGLE,
 	SHAPE_BLADE,
+	SHAPE_FOOT,
+	SHAPE_GUARD,
 	PRIMITIVE_TYPES
 };
 
@@ -113,4 +117,6 @@ private:
 	ModelNode excaliburGrip, excaliburGuard, excaliburBlade, head, leftUpperLeg, leftLowerLeg, rightUpperLeg, rightLowerLeg;
 	ModelNode leftShoulder, rightShoulder;
 	ModelNode lowerArmor[6],lowerFront[2],lowerOuter[6];
+	ModelNode leftFoot, rightFoot;
+	ModelNode leftHand, rightHand;
 };
