@@ -73,9 +73,8 @@ void QuadFunction(GLdouble x1, GLdouble y1, GLdouble x2, GLdouble y2, GLdouble x
 }
 
 const GLdouble DIVIDE_POINT = 1.0/4.0;
-const GLdouble ACME_DELTA = 0.1;
 
-void drawTorsoHalfLinear(GLdouble h,GLdouble r1,GLdouble r2,GLdouble rm,GLdouble mratio){
+void drawTorsoHalfLinear(GLdouble h,GLdouble r1,GLdouble r2,GLdouble rm,GLdouble mratio,GLdouble ACME_DELTA){
 	GLdouble hup, hlow;
 	hlow = mratio * h;
 	hup = h - hlow;
@@ -420,6 +419,57 @@ void drawPartialCylinder(GLdouble h, GLdouble r1, GLdouble r2, GLdouble startAng
 
 }
 
+void drawPartialTorso(GLdouble h, GLdouble r1, GLdouble r2, GLdouble rm,GLdouble mratio,GLdouble startAngle, GLdouble endAngle){
+	ModelerDrawState *mds = ModelerDrawState::Instance();
+	int divisions;
+	
+	GLdouble hup, hlow;
+	hlow = mratio * h;
+	hup = h - hlow;
+	GLdouble A, B, C;
+
+	QuadFunction(0, r1, hlow, rm, hup + hlow, r2, A, B, C);
+
+	_setupOpenGl();
+
+	switch (mds->m_quality)
+	{
+	case HIGH:
+		divisions = 32; break;
+	case MEDIUM:
+		divisions = 20; break;
+	case LOW:
+		divisions = 12; break;
+	case POOR:
+		divisions = 8; break;
+	}
+
+	if (mds->m_rayFile)
+	{
+		_dump_current_modelview();
+		fprintf(mds->m_rayFile,
+			"cone { height=%f; bottom_radius=%f; top_radius=%f;\n", h, r1, r2);
+		_dump_current_material();
+		fprintf(mds->m_rayFile, "})\n");
+	}
+	else
+	{
+		glPushMatrix();
+		for (int i = 0; i < divisions; i++){
+			GLdouble rfirst, rsecond, hfirst, hsecond;
+			hfirst = i*h / divisions;
+			hsecond = (i + 1)*h / divisions;
+			rfirst = hfirst*hfirst*A + hfirst*B + C;
+			rsecond = hsecond*hsecond*A + hsecond*B + C;
+			drawPartialCylinder(hsecond - hfirst, rfirst, rsecond,startAngle,endAngle);
+			glTranslated(0.0, 0.0, hsecond - hfirst);
+		}
+		glPopMatrix();
+
+	}
+
+}
+
 void drawBlade(int swordType){
 	if(swordType==TYPE_EXCALIBUR_MORGAN)setDiffuseColor(USE_COLOR_DARK);
 	else setDiffuseColor(USE_COLOR_EXCALIBUR);
@@ -547,12 +597,247 @@ void drawBlade(int swordType){
 }
 
 void drawFoot(){
-	drawPartialCylinder(2.0, 0.5, 0, 0, 180);
-	drawTriangle(-0.5, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 2.0);
+	glPushMatrix();
+	glScaled(1.0, 1.5, 1.0);
+	drawPartialCylinder(1.5, 0.4, 0, 0, 180);
+	glPopMatrix();
+	drawTriangle(-0.5, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 1.5);
 	glPushMatrix();
 	glRotated(-90.0, 1.0, 0.0, 0.0);
 	drawTorso(1.5, 0.52, 0.35, 0.4, 0.4);
 	glPopMatrix();
+}
+
+void drawEye(int li,int ty){
+	setDiffuseColor(USE_COLOR_WHITE);
+	drawTriangle(4.0, 3.0, 0.0, 3.0, 3.0, 0.0, 3.0, -1.0, 0.0);
+	drawTriangle(-3.0, 3.0, 0.0, -4.0, 3.0, 0.0, -3.0, -1.0, 0.0);
+
+	if(ty!=COSTUME_SABER_ALTER)setDiffuseColor(USE_COLOR_EYE_DARK_GREEN);
+	else setDiffuseColor(USE_COLOR_EYE_DARK_YELLOW);
+	drawTriangle(3.0, 3.0, 0.0, -3.0, 3.0, 0.0, -3.0, 1.0, 0.0);
+	drawTriangle(3.0, 3.0, 0.0, -3.0, 1.0, 0.0, 3.0, 1.0, 0.0);
+	drawTriangle(1.0, 1.0, 0.0, -1.0, 1.0, 0.0, -1.0, -1.0, 0.0);
+	drawTriangle(1.0, 1.0, 0.0, -1.0, -1.0, 0.0, 1.0, -1.0, 0.0);
+
+	setDiffuseColor(USE_COLOR_WHITE);
+	drawTriangle(-1.0, 1.0, 0.0, -3.0, 1.0, 0.0, -3.0, 0.0, 0.0);
+	drawTriangle(-1.0, 1.0, 0.0, -3.0, 0.0, 0.0, -1.0, 0.0, 0.0);
+
+	if (ty != COSTUME_SABER_ALTER)setDiffuseColor(USE_COLOR_EYE_GREEN);
+	else setDiffuseColor(USE_COLOR_EYE_YELLOW);
+	drawTriangle(1.0, 1.0, 0.0, 3.0, 0.0, 0.0, 3.0, 1.0, 0.0);
+	drawTriangle(1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 3.0, 0.0, 0.0);
+	drawTriangle(-1.0, 0.0, 0.0, -3.0, 0.0, 0.0, -3.0, -1.0, 0.0);
+	drawTriangle(-1.0, 0.0, 0.0, -3.0, -1.0, 0.0, -1.0, -1.0, 0.0);
+	drawTriangle(1.0, 0.0, 0.0, 3.0, -1.0, 0.0, 3.0, 0.0, 0.0);
+	drawTriangle(1.0, 0.0, 0.0, 1.0, -1.0, 0.0, 3.0, -1.0, 0.0);
+	drawTriangle(2.0, -3.0, 0.0, -3.0, -1.0, 0.0, -2.0, -3.0, 0.0);
+	drawTriangle(2.0, -3.0, 0.0, 3.0,-1.0, 0.0, -3.0, -1.0, 0.0);
+	
+	setDiffuseColor(USE_COLOR_BLACK);
+	if (li){
+		drawTriangle(-4.0, 4.5, 0.0, 4.0, 4.0, 0.0, 4.0, 4.2, 0.0);
+		drawTriangle(-4.0, 4.8, 0.0, -4.0, 4.5, 0.0, 4.0, 4.0, 0.0);
+	}
+	else {
+		drawTriangle(-4.0, 4.0, 0.0, 4.0, 4.5, 0.0, 4.0, 4.8, 0.0);
+		drawTriangle(-4.0, 4.2, 0.0, -4.0, 4.0, 0.0, 4.0, 4.5, 0.0);
+	}
+
+}
+
+void drawNose(){
+	setDiffuseColor(USE_COLOR_BODY);
+	drawTriangle(0.0, 3.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+	drawTriangle(0.0, 3.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0);
+	drawTriangle(0.0, 0.0, 1.0, -1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+}
+void drawMouth(){
+	setDiffuseColor(USE_COLOR_BODY);
+	drawTriangle(0.0, 1.0, 0.0, -3.0, 0.0, 0.0, 0.0, 0.2, 1.0);
+	drawTriangle(0.0, 1.0, 0.0, 0.0, 0.2, 1.0, 3.0, 0.0, 0.0);
+	drawTriangle(0.0, 0.2, 1.0, -3.0, 0.0, 0.0, 3.0, 0.0, 0.0);
+	drawTriangle(0.0, -1.0, 0.0, 0.0, -0.2, 1.0, -3.0, 0.0, 0.0);
+	drawTriangle(0.0, -1.0, 0.0, 3.0, 0.0, 0.0, 0.0, -0.2, 1.0);
+	drawTriangle(0.0, -0.2, 1.0, 3.0, 0.0, 0.0, -3.0, 0.0, 0.0);
+}
+
+void drawHair(GLdouble mp,GLdouble ep){
+	drawTriangle(0.5, 0.0, 0.0, mp - 0.25, -0.5, 0.0, -0.5, 0.0, 0.0);
+	drawTriangle(0.5, 0.0, 0.0, mp + 0.25, -0.5, 0.0, mp - 0.25, -0.5, 0.0);
+	drawTriangle(mp + 0.25, -0.5, 0.0, mp + ep, -1.0, 0.0, mp - 0.25, -0.5, 0.0);
+}
+
+#define UP_LINE_HEIGHT(x) (x*x/5.0)
+#define LOW_LINE_HEIGHT(x) (x*x/10.0*1.3)
+#define FACE_START_POINT 0.5
+#define FACE_INDENT 0.2
+#define FACE_BOTTOM 0.0, -0.05, 0.6
+#define LOWER_RADIUS 0.6
+#define LOWER_HEIGHT 0.25
+#define BOTTOM_RADIUS 0.1
+void drawHead(int ty){
+	srand(time(0));
+	glPushMatrix();
+	if(ty!=COSTUME_SABER_ALTER)setDiffuseColor(USE_COLOR_HAIR_GOLD);
+	else setDiffuseColor(USE_COLOR_HAIR_DARK_GOLD);
+	glTranslated(0.0, 1.0, 0.0);
+	glRotated(90.0, 1.0, 0.0, 0.0);
+	drawCylinder(1 - LOWER_HEIGHT, 1.0, LOWER_RADIUS);
+	glPopMatrix();
+	glPushMatrix();
+	if (ty != COSTUME_SABER_ALTER)setDiffuseColor(USE_COLOR_BODY);
+	else setDiffuseColor(USE_COLOR_PALE);
+	glTranslated(0.0, LOWER_HEIGHT, 0.0);
+	glRotated(90.0, 1.0, 0.0, 0.0);
+	drawCylinder(LOWER_HEIGHT+0.01, LOWER_RADIUS, BOTTOM_RADIUS);
+	glPopMatrix();
+
+	if (ty != COSTUME_SABER_ALTER)setDiffuseColor(USE_COLOR_BODY);
+	else setDiffuseColor(USE_COLOR_PALE);
+
+	drawTriangle(cos(FACE_START_POINT), 1.0, sin(FACE_START_POINT), cos(FACE_START_POINT) - FACE_INDENT, 1.0, sin(FACE_START_POINT) + FACE_INDENT / sin(FACE_START_POINT) * cos(FACE_START_POINT), LOWER_RADIUS*cos(FACE_START_POINT) - FACE_INDENT, LOWER_HEIGHT, LOWER_RADIUS*sin(FACE_START_POINT) + FACE_INDENT / sin(FACE_START_POINT) * cos(FACE_START_POINT));
+	drawTriangle(cos(FACE_START_POINT), 1.0, sin(FACE_START_POINT), LOWER_RADIUS*cos(FACE_START_POINT) - FACE_INDENT, LOWER_HEIGHT, LOWER_RADIUS*sin(FACE_START_POINT) + FACE_INDENT / sin(FACE_START_POINT) * cos(FACE_START_POINT), cos(FACE_START_POINT)* LOWER_RADIUS, LOWER_HEIGHT, sin(FACE_START_POINT)*LOWER_RADIUS);
+	drawTriangle(-cos(FACE_START_POINT), 1.0, sin(FACE_START_POINT), -LOWER_RADIUS*cos(FACE_START_POINT) + FACE_INDENT, LOWER_HEIGHT, LOWER_RADIUS*sin(FACE_START_POINT) + FACE_INDENT / sin(FACE_START_POINT) * cos(FACE_START_POINT), -cos(FACE_START_POINT) + FACE_INDENT, 1.0, sin(FACE_START_POINT) + FACE_INDENT / sin(FACE_START_POINT) * cos(FACE_START_POINT));
+	drawTriangle(-cos(FACE_START_POINT), 1.0, sin(FACE_START_POINT), -cos(FACE_START_POINT)* LOWER_RADIUS, LOWER_HEIGHT, sin(FACE_START_POINT)*LOWER_RADIUS, -LOWER_RADIUS*cos(FACE_START_POINT) + FACE_INDENT, LOWER_HEIGHT, LOWER_RADIUS*sin(FACE_START_POINT) + FACE_INDENT / sin(FACE_START_POINT) * cos(FACE_START_POINT));
+	
+	
+	drawTriangle(cos(FACE_START_POINT), 1.0, sin(FACE_START_POINT), cos(FACE_START_POINT) - FACE_INDENT, 1.0, sin(FACE_START_POINT) + FACE_INDENT / sin(FACE_START_POINT) * cos(FACE_START_POINT), LOWER_RADIUS*cos(FACE_START_POINT) - FACE_INDENT, LOWER_HEIGHT, LOWER_RADIUS*sin(FACE_START_POINT) + FACE_INDENT / sin(FACE_START_POINT) * cos(FACE_START_POINT));
+	drawTriangle(cos(FACE_START_POINT), 1.0, sin(FACE_START_POINT), LOWER_RADIUS*cos(FACE_START_POINT) - FACE_INDENT, LOWER_HEIGHT, LOWER_RADIUS*sin(FACE_START_POINT) + FACE_INDENT / sin(FACE_START_POINT) * cos(FACE_START_POINT), cos(FACE_START_POINT)* LOWER_RADIUS, LOWER_HEIGHT, sin(FACE_START_POINT)*LOWER_RADIUS);
+	
+	if (ty != COSTUME_SABER_ALTER)setDiffuseColor(USE_COLOR_BODY);
+	else setDiffuseColor(USE_COLOR_DARK_ARMOR);
+	drawTriangle(0.0, 0.0, 0.0, FACE_BOTTOM, BOTTOM_RADIUS*cos(FACE_START_POINT), 0.0, BOTTOM_RADIUS*sin(FACE_START_POINT));
+	drawTriangle(FACE_BOTTOM, BOTTOM_RADIUS*cos(FACE_START_POINT), 0.0, BOTTOM_RADIUS*sin(FACE_START_POINT), LOWER_RADIUS*cos(FACE_START_POINT), LOWER_HEIGHT, LOWER_RADIUS*sin(FACE_START_POINT));
+	drawTriangle(cos(FACE_START_POINT)* LOWER_RADIUS, LOWER_HEIGHT, sin(FACE_START_POINT)*LOWER_RADIUS, LOWER_RADIUS*cos(FACE_START_POINT) - FACE_INDENT, LOWER_HEIGHT, LOWER_RADIUS*sin(FACE_START_POINT) + FACE_INDENT / sin(FACE_START_POINT) * cos(FACE_START_POINT), FACE_BOTTOM);
+	drawTriangle(0.0, 0.0, 0.0, -BOTTOM_RADIUS*cos(FACE_START_POINT), 0.0, BOTTOM_RADIUS*sin(FACE_START_POINT), FACE_BOTTOM);
+	drawTriangle(FACE_BOTTOM, -LOWER_RADIUS*cos(FACE_START_POINT), LOWER_HEIGHT, LOWER_RADIUS*sin(FACE_START_POINT), -BOTTOM_RADIUS*cos(FACE_START_POINT), 0.0, BOTTOM_RADIUS*sin(FACE_START_POINT));
+	drawTriangle(-cos(FACE_START_POINT)* LOWER_RADIUS, LOWER_HEIGHT, sin(FACE_START_POINT)*LOWER_RADIUS, FACE_BOTTOM, -LOWER_RADIUS*cos(FACE_START_POINT) + FACE_INDENT, LOWER_HEIGHT, LOWER_RADIUS*sin(FACE_START_POINT) + FACE_INDENT / sin(FACE_START_POINT) * cos(FACE_START_POINT));
+
+	if (ty != COSTUME_SABER_ALTER)setDiffuseColor(USE_COLOR_BODY);
+	else setDiffuseColor(USE_COLOR_PALE);
+	drawTriangle(-cos(FACE_START_POINT), 1.0, sin(FACE_START_POINT), -LOWER_RADIUS*cos(FACE_START_POINT) + FACE_INDENT, LOWER_HEIGHT, LOWER_RADIUS*sin(FACE_START_POINT) + FACE_INDENT / sin(FACE_START_POINT) * cos(FACE_START_POINT), -cos(FACE_START_POINT) + FACE_INDENT, 1.0, sin(FACE_START_POINT) + FACE_INDENT / sin(FACE_START_POINT) * cos(FACE_START_POINT));
+	drawTriangle(-cos(FACE_START_POINT), 1.0, sin(FACE_START_POINT), -cos(FACE_START_POINT)* LOWER_RADIUS, LOWER_HEIGHT, sin(FACE_START_POINT)*LOWER_RADIUS, -LOWER_RADIUS*cos(FACE_START_POINT) + FACE_INDENT, LOWER_HEIGHT, LOWER_RADIUS*sin(FACE_START_POINT) + FACE_INDENT / sin(FACE_START_POINT) * cos(FACE_START_POINT));
+	
+	
+	
+	GLdouble upidZ = sin(FACE_START_POINT) + FACE_INDENT / sin(FACE_START_POINT) * cos(FACE_START_POINT);
+	GLdouble lowidZ = LOWER_RADIUS*sin(FACE_START_POINT) + FACE_INDENT / sin(FACE_START_POINT) * cos(FACE_START_POINT);
+	int divisions = 30;
+	GLdouble upthis[2], lowthis[2], uplast[2], lowlast[2];
+	upthis[0]=0.0;
+	upthis[1] =  upidZ+ 0.2;
+	lowthis[0] = 0.0;
+	lowthis[1] = lowidZ +0.13;
+	for (int i = 1; i <= divisions; i++){
+		uplast[0] = upthis[0];
+		uplast[1] = upthis[1];
+		lowlast[0] = lowthis[0];
+		lowlast[1] = lowthis[1];
+		upthis[0] = (cos(FACE_START_POINT) - FACE_INDENT) / divisions*i;
+		upthis[1] = upidZ + 0.2 - UP_LINE_HEIGHT(upthis[0] / (cos(FACE_START_POINT) - FACE_INDENT));
+		lowthis[0] = (LOWER_RADIUS*cos(FACE_START_POINT) - FACE_INDENT) / divisions*i;
+		lowthis[1] = lowidZ + 0.13 - LOW_LINE_HEIGHT(lowthis[0] / (LOWER_RADIUS*cos(FACE_START_POINT) - FACE_INDENT));
+
+		if (ty != COSTUME_SABER_ALTER)setDiffuseColor(USE_COLOR_BODY);
+		else setDiffuseColor(USE_COLOR_PALE);
+		drawTriangle(uplast[0], 1.0, uplast[1], lowlast[0], LOWER_HEIGHT, lowlast[1], upthis[0], 1.0, upthis[1]);
+		drawTriangle(upthis[0], 1.0, upthis[1], lowlast[0], LOWER_HEIGHT, lowlast[1], lowthis[0], LOWER_HEIGHT, lowthis[1]);
+		drawTriangle(lowlast[0], LOWER_HEIGHT, lowlast[1], lowthis[0], LOWER_HEIGHT, lowthis[1], FACE_BOTTOM);
+		drawTriangle(-uplast[0], 1.0, uplast[1], -upthis[0], 1.0, upthis[1], -lowlast[0], LOWER_HEIGHT, lowlast[1]);
+		drawTriangle(-upthis[0], 1.0, upthis[1], -lowthis[0], LOWER_HEIGHT, lowthis[1], -lowlast[0], LOWER_HEIGHT, lowlast[1]);
+		drawTriangle(-lowlast[0], LOWER_HEIGHT, lowlast[1], FACE_BOTTOM, -lowthis[0], LOWER_HEIGHT, lowthis[1]);
+
+		if (ty != COSTUME_SABER_ALTER)setDiffuseColor(USE_COLOR_HAIR_GOLD);
+		else setDiffuseColor(USE_COLOR_HAIR_DARK_GOLD);
+		drawTriangle(-uplast[0], 1.0, uplast[1], 0.0, 1.0, 0.0, -upthis[0], 1.0, upthis[1]);
+		drawTriangle(uplast[0], 1.0, uplast[1], upthis[0], 1.0, upthis[1], 0.0, 1.0, 0.0);
+
+		if (!(i % 2)){
+			double mp = (double)rand() / RAND_MAX *2.0 - 1.0;
+			double ep = (double)rand() / RAND_MAX *4.0 - 2.0;
+			if (ty != COSTUME_SABER_ALTER)setDiffuseColor(USE_COLOR_HAIR_GOLD);
+			else setDiffuseColor(USE_COLOR_HAIR_DARK_GOLD);
+			glPushMatrix();
+			glTranslated(upthis[0], 1.0, upthis[1]+0.02);
+			glScaled(-0.15, 0.4, 0.0);
+			drawHair(mp, ep);
+			glPopMatrix();
+			mp = (double)rand() / RAND_MAX *2.0 - 1.0;
+			ep = (double)rand() / RAND_MAX *4.0 - 2.0;
+			glPushMatrix();
+			glTranslated(-upthis[0], 1.0, upthis[1] + 0.02);
+			glScaled(-0.1, 0.4, 0.1);
+			drawHair(mp, ep);
+			glPopMatrix();
+		}
+	}
+	if (ty != COSTUME_SABER_ALTER)setDiffuseColor(USE_COLOR_HAIR_GOLD);
+	else setDiffuseColor(USE_COLOR_HAIR_DARK_GOLD);
+	drawTriangle(upthis[0], 1.0, upthis[1], cos(FACE_START_POINT), 1.0, sin(FACE_START_POINT), 0.0, 1.0, 0.0);
+	drawTriangle(-upthis[0], 1.0, upthis[1], 0.0, 1.0, 0.0, -cos(FACE_START_POINT), 1.0, sin(FACE_START_POINT));
+
+	if (ty != COSTUME_SABER_ALTER)setDiffuseColor(USE_COLOR_HAIR_GOLD);
+	else setDiffuseColor(USE_COLOR_HAIR_DARK_GOLD);
+	divisions = 60;
+	for (int i = -divisions/10; i <= divisions+divisions/10; i++){
+		GLdouble curAngle = (3.14159 + FACE_START_POINT * 2.0) / divisions * i + 3.14159 - FACE_START_POINT;
+		GLdouble curX, curZ;
+		curX = cos(curAngle);
+		curZ = sin(curAngle);
+		GLdouble rotY = (-curAngle*180.0 / 3.14159 + 90.0);
+		glPushMatrix();
+		glTranslated(curX*1.05, 1.0, curZ*1.05);
+		glRotated(rotY, 0.0, 1.0, 0.0);
+		if(curZ<0.3&&curZ>esp)glScaled(-0.15, 1.2, 0.1);
+		else glScaled(-0.1, 0.8, 0.1);
+		double mp = (double)rand() / RAND_MAX *1.0 - 0.5;
+		double ep = (double)rand() / RAND_MAX *2.0 - 1.0;
+		drawHair(mp, ep);
+		glPopMatrix();
+	}
+
+	glPushMatrix();
+	glTranslated(-0.23, 0.5, 0.9);
+	glRotated(10.0, 1.0, 0.0, 0.0);
+	glRotated(-10.0,0.0, 1.0, 0.0);
+	glScaled(0.04, 0.03, 1.0);
+	drawEye(1,ty);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslated(0.23, 0.5, 0.9);
+	glRotated(10.0, 1.0, 0.0, 0.0);
+	glRotated(10.0, 0.0, 1.0, 0.0);
+	glScaled(0.04, 0.03, 1.0);
+	drawEye(0,ty);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslated(0.0, 0.3, 0.82);
+	glScaled(0.07, 0.05, 0.1);
+	drawNose();
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslated(0.0, 0.2, 0.8);
+	glScaled(0.05, 0.01, 0.05);
+	drawMouth();
+	glPopMatrix();
+
+	//VERY IMPORTANT!
+	if (ty != COSTUME_SABER_ALTER){
+		setDiffuseColor(USE_COLOR_HAIR_GOLD);
+		double mp = (double)rand() / RAND_MAX *1.0 - 0.5;
+		double ep = (double)rand() / RAND_MAX *2.0 - 1.0;
+		glPushMatrix();
+		glTranslated(0.0, 1.01, 0.8);
+		glRotated(120, 0.0, 0.0, 1.0);
+		glScaled(-0.1, 0.8, 0.1);
+		drawHair(mp,ep);
+		glPopMatrix();
+	}
 }
 
 void drawSwordGuard(){
@@ -639,6 +924,10 @@ void ModelNode::setSwordType(int ty){
 	swordType = ty;
 }
 
+void ModelNode::setHeadType(int ty){
+	headType = ty;
+}
+
 void ModelNode::setStartAndEndAngle(GLdouble theStartAngle, GLdouble theEndAngle){
 	startAngle = theStartAngle;
 	endAngle = theEndAngle;
@@ -704,7 +993,7 @@ void ModelNode::Render(){
 		glRotated(90.0, 1.0, 0.0, 0.0);
 		glTranslated(transX, transZ, transY);
 		glScaled(xScale, zScale, yScale / abs(yScale));
-		drawTorsoHalfLinear(abs(yScale), 1.0, upperScale, middleScale, middleRatio);
+		drawTorsoHalfLinear(abs(yScale), 1.0, upperScale, middleScale, middleRatio,0.1);
 		break;
 	case SHAPE_BLADE:
 		glTranslated(transX, transY, transZ);
@@ -721,6 +1010,11 @@ void ModelNode::Render(){
 		glTranslated(transX, transY, transZ);
 		glScaled(xScale, yScale, zScale);
 		drawFoot();
+		break;
+	case SHAPE_HEAD:
+		glTranslated(transX, transY, transZ);
+		glScaled(xScale, yScale, zScale);
+		drawHead(headType);
 		break;
 	case SHAPE_GUARD:
 		glTranslated(transX, transY, transZ);
@@ -753,7 +1047,7 @@ void SaberModel::InitializeTree(){
 	excaliburGuard.nodeCreate(&excaliburGrip, SHAPE_GUARD);
 	excaliburBlade.nodeCreate(&excaliburGuard, SHAPE_BLADE);
 	lowerTorso.nodeCreate(&upperTorso, PRIMITIVE_CYLINDER_NO_DISK);
-	head.nodeCreate(&upperTorso, PRIMITIVE_SPHERE);
+	head.nodeCreate(&upperTorso, SHAPE_HEAD);
 	leftUpperLeg.nodeCreate(&lowerTorso, SHAPE_TORSO);
 	leftLowerLeg.nodeCreate(&leftUpperLeg, SHAPE_TORSO);
 	rightUpperLeg.nodeCreate(&lowerTorso, SHAPE_TORSO);
@@ -858,29 +1152,30 @@ void SaberModel::CostumeSaber(){
 
 	excaliburGuard.setAngle(0.0, 0.0, 0.0);
 	excaliburGuard.setColor(USE_COLOR_GOLD);
-	excaliburGuard.setScale(0.4, -0.4, 0.08);
+	excaliburGuard.setScale(0.3, -0.2, 0.06);
 	excaliburGuard.setStartPos(0.0, 0.0, 0.0);
 	excaliburGuard.setTrans(0.0, 0.0, 0.0);
 
 	excaliburBlade.setAngle(0.0, 0.0, 0.0);
 	excaliburBlade.setColor(USE_COLOR_EXCALIBUR);
-	excaliburBlade.setScale(0.4, -4.0, 0.06);
-	excaliburBlade.setStartPos(0.0, -0.35, 0.0);
+	excaliburBlade.setScale(0.3, -5.0, 0.04);
+	excaliburBlade.setStartPos(0.0, -0.17, 0.0);
 	excaliburBlade.setTrans(0.0, 0.0, 0.0);
 	excaliburBlade.setSwordType(TYPE_EXCALIBUR);
 
 	excaliburGrip.setAngle(0.0, 0.0, 0.0);
 	excaliburGrip.setColor(USE_COLOR_BLUE);
-	excaliburGrip.setScale(0.1, -1.0, 0.1);
+	excaliburGrip.setScale(0.07, -1.0, 0.07);
 	excaliburGrip.setStartPos(0.0, -0.5, 0.0);
 	excaliburGrip.setTrans(0.0, 0.0, 0.0);
 	excaliburGrip.cylinderScale(0.8, 0.5, 0.5);
 
-	head.setAngle(0.0, 0.0, 0.0);
+	head.setAngle(0.0, 180.0, 0.0);
 	head.setColor(USE_COLOR_BODY);
-	head.setScale(1.0, 1.0, 1.0);
-	head.setStartPos(0.0, 0.7, 0.0);
-	head.setTrans(0.0, 0.0, 0.0);
+	head.setScale(0.8, 1.5, 0.8);
+	head.setStartPos(0.0, 0.0, 0.0);
+	head.setTrans(0.0, 0.1, 0.0);
+	head.setHeadType(COSTUME_SABER);
 
 	leftUpperLeg.setAngle(0.0, 0.0, -10.0);
 	leftUpperLeg.setColor(USE_COLOR_BLUE);
@@ -1019,6 +1314,7 @@ void SaberModel::CostumeSaber(){
 void SaberModel::CostumeSaberAlter(){
 	CostumeSaber();
 	excaliburBlade.setSwordType(TYPE_EXCALIBUR_MORGAN);
+	head.setHeadType(COSTUME_SABER_ALTER);
 
 	upperTorso.setColor(USE_COLOR_DARK_ARMOR);
 	leftUpperArm.setColor(USE_COLOR_DARK_CLOTHES);
@@ -1117,6 +1413,7 @@ void SaberModel::CostumeSaberAlter(){
 void SaberModel::CostumeSaberLily(){
 	CostumeSaber();
 	excaliburBlade.setSwordType(TYPE_CALIBURN);
+	head.setHeadType(COSTUME_SABER_LILY);
 	
 	leftShoulder.nodeCreate(NULL, SHAPE_TORSO);
 	rightShoulder.nodeCreate(NULL, SHAPE_TORSO);

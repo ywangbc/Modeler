@@ -7,6 +7,7 @@
 #include <GL/glu.h>
 #include <cmath>
 #include <string>
+#include <ctime>
 using namespace std;
 
 #include "modelerglobals.h"
@@ -25,6 +26,13 @@ using namespace std;
 #define USE_COLOR_WHITE 254.0/255.0,254.0/255.0,254.0/255.0
 #define USE_COLOR_BODY 255.0/255.0, 238.0/255.0, 212.0/255.0
 #define USE_COLOR_DARK_GOLD 211.0/255.0,197.0/255.0,162.0/255.0
+#define USE_COLOR_HAIR_GOLD 255.0/255.0,252.0/255.0,149.0/255.0
+#define USE_COLOR_HAIR_DARK_GOLD 243.0/255.0, 233.0/255.0, 210.0/255.0
+#define USE_COLOR_EYE_GREEN 117.0/255.0, 150.0/255.0, 142.0/255.0
+#define USE_COLOR_EYE_DARK_GREEN 26.0 / 255.0, 63.0 / 255.0, 82.0 / 255.0
+#define USE_COLOR_EYE_YELLOW 252.0/255.0, 250.0/255.0, 210.0/255.0
+#define USE_COLOR_EYE_DARK_YELLOW 156 / 255.0, 126 / 255.0, 71 / 255.0
+#define USE_COLOR_PALE 244.0/255.0, 236.0/255.0, 246.0/255.0
 
 const double esp = 1e-6;
 enum{
@@ -36,9 +44,11 @@ enum{
 	SHAPE_TORSO,
 	SHAPE_TORSO_LINEAR,
 	SHAPE_TORSO_HALF_LINEAR,
+	SHAPE_PARTIAL_TORSO,
 	PRIMITIVE_TRIANGLE,
 	SHAPE_BLADE,
 	SHAPE_FOOT,
+	SHAPE_HEAD,
 	SHAPE_GUARD,
 	PRIMITIVE_TYPES
 };
@@ -63,6 +73,7 @@ private:
 	ModelNode *childHead, *brotherNext;
 	int primitiveType;
 	int swordType;
+	int headType;
 	GLdouble xAngle, yAngle, zAngle, startPosX, startPosY, startPosZ, xScale, yScale, zScale;
 	GLdouble upperScale,middleScale,middleRatio;
 	GLdouble colorRed, colorGreen, colorBlue;
@@ -80,6 +91,7 @@ public:
 	void setColor(GLdouble r, GLdouble g, GLdouble b);
 	void setColorAlpha(GLdouble r, GLdouble g, GLdouble b,GLdouble alpha);
 	void setSwordType(int ty);
+	void setHeadType(int ty);
 	void setTrans(GLdouble X, GLdouble Y, GLdouble Z);
 	void cylinderScale(GLdouble theUpperScale, GLdouble theMiddleScale, GLdouble theMiddleRatio);
 	void setStartAndEndAngle(GLdouble theStartAngle, GLdouble theEndAngle);
