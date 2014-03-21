@@ -372,12 +372,3 @@ void ModelerUserInterface::cb_Red(Fl_Menu_* o , void* v)
 	((ModelerUserInterface*)(o->parent()->user_data()))->cb_Red_i(o, v);
 }
 
-inline void ModelerUserInterface::cb_Twist_i(Fl_Menu_* o, void* v)
-{
-	bool temp = m_modelerView->m_camera->twist;
-	m_modelerView->m_camera->twist = temp ? false : true;
-}
-void ModelerUserInterface::cb_Twist(Fl_Menu_* o, void* v)
-{
-	((ModelerUserInterface*)(o->parent()->user_data()))->cb_Twist_i(o, v);
-}

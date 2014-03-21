@@ -168,6 +168,7 @@ void Camera::dragMouse( int x, int y )
 			setAzimuth(getAzimuth() + dAzimuth);
 			setElevation(getElevation() + dElevation);
 
+			setTwist();
 			break;
 		}
 	default:

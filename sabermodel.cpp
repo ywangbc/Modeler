@@ -780,7 +780,7 @@ void drawHead(int ty){
 
 	if (ty != COSTUME_SABER_ALTER)setDiffuseColor(USE_COLOR_HAIR_GOLD);
 	else setDiffuseColor(USE_COLOR_HAIR_DARK_GOLD);
-	divisions = 60;
+	divisions = 80;
 	for (int i = -divisions/10; i <= divisions+divisions/10; i++){
 		GLdouble curAngle = (3.14159 + FACE_START_POINT * 2.0) / divisions * i + 3.14159 - FACE_START_POINT;
 		GLdouble curX, curZ;
@@ -791,12 +791,35 @@ void drawHead(int ty){
 		glTranslated(curX*1.05, 1.05, curZ*1.05);
 		glRotated(rotY, 0.0, 1.0, 0.0);
 		if(curZ<0.3&&curZ>esp)glScaled(-0.15, 1.2, 0.1);
-		else glScaled(-0.1, 0.8, 0.1);
+		else glScaled(-0.1, 0.7, 0.1);
 		double mp = (double)rand() / RAND_MAX *1.0 - 0.5;
 		double ep = (double)rand() / RAND_MAX *2.0 - 1.0;
 		drawHair(mp, ep);
 		glPopMatrix();
 	}
+	//Top hair
+	divisions = 80;
+	for (int i = 0; i <= divisions; i++){
+		GLdouble curAngle = (3.14159 *2) / divisions * i;
+		glPushMatrix(); 
+		GLdouble curX, curZ;
+		curX = cos(curAngle);
+		curZ = sin(curAngle);
+		glTranslated(curZ*1.05, 1.05, curX*1.05);
+		glRotated(curAngle*180.0 / 3.14159, 0.0, 1.0, 0.0);
+		glRotated(105.0, 1.0, 0.0, 0.0);
+		glScaled(0.1, 1.2, 0.1);
+		double mp = (double)rand() / RAND_MAX *1.0 - 0.5;
+		double ep = (double)rand() / RAND_MAX *2.0 - 1.0;
+		drawHair(mp, ep);
+		glPopMatrix();
+	}
+	
+	glPushMatrix();
+	glTranslated(0.0, 1.0, 0.0);
+	glRotated(-90, 1.0, 0.0, 0.0);
+	drawCylinder(0.3, 1.0, 0);
+	glPopMatrix();
 
 	glPushMatrix();
 	glTranslated(-0.23, 0.5, 0.87);
@@ -1175,7 +1198,7 @@ void SaberModel::CostumeSaber(){
 	excaliburGrip.setTrans(0.0, 0.0, 0.0);
 	excaliburGrip.cylinderScale(0.8, 0.5, 0.5);
 
-	head.setAngle(0.0, 180.0, 0.0);
+	head.setAngle(0.0, 215.0, 0.0);
 	head.setColor(USE_COLOR_BODY);
 	head.setScale(0.8, 1.4, 0.8);
 	head.setStartPos(0.0, 0.0, 0.0);
