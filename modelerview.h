@@ -23,9 +23,11 @@ public:
 	virtual ~ModelerView();
     virtual int handle(int event);
     virtual void draw();
+	void drawSpecial();
 
     Camera *m_camera;
 
+	bool redLight;
 	bool animation;
 	int step;
 };

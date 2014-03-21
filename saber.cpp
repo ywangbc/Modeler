@@ -14,7 +14,17 @@ void SaberModel::draw()
 	// This call takes care of a lot of the nasty projection 
 	// matrix stuff.  Unless you want to fudge directly with the 
 	// projection matrix, don't bother with this ...
-	ModelerView::draw();
+
+	printf("RedLight: %d \n", redLight);
+	if (redLight)
+	{
+		ModelerView::drawSpecial();
+	}
+	else
+	{
+		ModelerView::draw();
+	}
+
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
