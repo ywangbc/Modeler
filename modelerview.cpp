@@ -43,6 +43,7 @@ int ModelerView::handle(int event)
 			case kMouseZoomButton:
 				m_camera->clickMouse(kActionZoom, eventCoordX, eventCoordY );
 				break;
+			
 			}
            // printf("push %d %d\n", eventCoordX, eventCoordY);
 		}

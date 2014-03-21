@@ -273,7 +273,8 @@ Fl_Menu_Item ModelerUserInterface::menu_m_controlsMenuBar[] = {
  {0},
  {"Animate", 0,  0, 0, 64, 0, 0, 14, 0},
  {"Enable", 0,  (Fl_Callback*)ModelerUserInterface::cb_m_controlsAnimOnMenu, 0, 2, 0, 0, 14, 0},
- { "RedLight", 0, (Fl_Callback*)ModelerUserInterface::cb_Red, 0, 0, 0, 0, 14, 0 },
+ {"RedLight", 0, (Fl_Callback*)ModelerUserInterface::cb_Red, 0, 0, 0, 0, 14, 0 },
+ {"Enable Twist", 0, (Fl_Callback*)ModelerUserInterface::cb_Twist, 0, 2, 0, 0, 14, 0 },
  {0},
  {0}
 };
@@ -371,4 +372,18 @@ void ModelerUserInterface::cb_Red(Fl_Menu_* o , void* v)
 {
 	((ModelerUserInterface*)(o->parent()->user_data()))->cb_Red_i(o, v);
 }
-
+inline void ModelerUserInterface::cb_Twist_i(Fl_Menu_* o, void* v)
+{
+	if (m_modelerView->m_camera->enableTwist)
+	{
+		m_modelerView->m_camera->enableTwist = false;
+	}
+	else
+	{
+		m_modelerView->m_camera->enableTwist = true;
+	}
+}
+void ModelerUserInterface::cb_Twist(Fl_Menu_* o, void* v)
+{
+	((ModelerUserInterface*)(o->parent()->user_data()))->cb_Twist_i(o, v);
+}

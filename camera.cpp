@@ -92,10 +92,24 @@ void Camera::calculateViewingTransformParameters()
 	// grouped for (mat4 * vec3) ops instead of (mat4 * mat4) ops
 	mPosition = originXform * (azimXform * (elevXform * (dollyXform * mPosition)));
 
-	if ( fmod((double)mElevation, 2.0*M_PI) < 3*M_PI/2 && fmod((double)mElevation, 2.0*M_PI) > M_PI/2 )
-		mUpVector= Vec3f(0,-1,0);
+	float xval = cos(mTwist);
+	float yval = sin(mTwist);
+
+	if (enableTwist)
+	{
+		if (fmod((double)mElevation, 2.0*M_PI) < 3 * M_PI / 2 && fmod((double)mElevation, 2.0*M_PI) > M_PI / 2)
+			mUpVector = Vec3f(-xval, -yval, -xval);
+		else
+			mUpVector = Vec3f(xval, yval, -xval);
+	}
+
 	else
-		mUpVector= Vec3f(0,1,0);
+	{
+		if (fmod((double)mElevation, 2.0*M_PI) < 3 * M_PI / 2 && fmod((double)mElevation, 2.0*M_PI) > M_PI / 2)
+			mUpVector = Vec3f(0, -1, 0);
+		else
+			mUpVector = Vec3f(0, 1, 0);
+	}
 
 	mDirtyTransform = false;
 }
@@ -106,9 +120,9 @@ Camera::Camera()
 	mDolly = -20.0f;
 	mElevation = 0.2f;
 	mAzimuth = (float)M_PI;
-	twist = false;
 	mLookAt = Vec3f( 0, 0, 0 );
 	mCurrentMouseAction = kActionNone;
+	enableTwist = false;
 
 	calculateViewingTransformParameters();
 }
@@ -164,12 +178,12 @@ void Camera::dragMouse( int x, int y )
 		{
 			float dAzimuth = -mouseDelta[0] * kMouseRotationSensitivity;
 			float dElevation = mouseDelta[1] * kMouseRotationSensitivity;
+			float dTwist = sqrt(mouseDelta[0] * mouseDelta[0] + mouseDelta[1] * mouseDelta[1]) * kMouseRotationSensitivity;
 
 			setAzimuth(getAzimuth() + dAzimuth);
 			setElevation(getElevation() + dElevation);
-
-			setTwist();
-			break;
+			setTwist(getTwist() + dTwist);
+		
 		}
 	default:
 		break;
@@ -211,11 +225,8 @@ void Camera::lookAt(Vec3f eye, Vec3f at, Vec3f up)
 	Vec3f up1 = vectNorm(up);
 
 	Vec3f S = vectCross(f, up1);
-	Vec3f s;
-	if (!twist)
-	{
-		 s = vectNorm(S);
-	}
+	Vec3f s = vectNorm(S);
+
 	
 
 	printf("S %f %f %f\n", &S[0], &S[1], &S[2]);
