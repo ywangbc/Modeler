@@ -3,6 +3,7 @@
 #include "modelerview.h"
 #include "modelerapp.h"
 #include "modelerdraw.h"
+#include "bitmap.h"
 #include <FL/gl.h>
 #include <GL/glu.h>
 #include <cmath>
@@ -91,6 +92,7 @@ private:
 	GLdouble transX, transY, transZ;
 	GLdouble startAngle, endAngle;
 	bool disabled;
+	bool texAvailable;
 	string rotateOrder;
 public:
 	ModelNode();
@@ -109,6 +111,8 @@ public:
 	void enableNode();
 	void disableNode();
 	void Render();
+	void enableTexture();
+	void disableTexture();
 };
 
 // To make a SaberModel, we inherit off of ModelerView

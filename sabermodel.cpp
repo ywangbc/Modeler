@@ -363,6 +363,7 @@ void drawTorsoLinear(GLdouble h, GLdouble r1, GLdouble r2, GLdouble rm, GLdouble
 
 }
 
+
 void drawPartialCylinder(GLdouble h, GLdouble r1, GLdouble r2, GLdouble startAngle, GLdouble endAngle){
 	ModelerDrawState *mds = ModelerDrawState::Instance();
 	int divisions;
@@ -417,6 +418,135 @@ void drawPartialCylinder(GLdouble h, GLdouble r1, GLdouble r2, GLdouble startAng
 
 	}
 
+}
+
+static GLuint texName;
+void TextureInit(){
+	
+	int width, height;
+	unsigned char *data = readBMP("texture_front.bmp", width, height);
+
+	glGenTextures(1, &texName);
+	glBindTexture(GL_TEXTURE_2D, texName);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+		GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+		GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width,
+		height, 0, GL_RGB, GL_UNSIGNED_BYTE,
+		data);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+}
+
+
+void drawTriangleTexture(double x1, double y1, double z1,
+	double x2, double y2, double z2,
+	double x3, double y3, double z3,
+	double texRatio,double unitRatio, int ty)
+{
+	ModelerDrawState *mds = ModelerDrawState::Instance();
+
+	_setupOpenGl();
+
+	if (mds->m_rayFile)
+	{
+		_dump_current_modelview();
+		fprintf(mds->m_rayFile,
+			"polymesh { points=((%f,%f,%f),(%f,%f,%f),(%f,%f,%f)); faces=((0,1,2));\n", x1, y1, z1, x2, y2, z2, x3, y3, z3);
+		_dump_current_material();
+		fprintf(mds->m_rayFile, "})\n");
+	}
+	else
+	{
+		double a, b, c, d, e, f;
+
+		/* the normal to the triangle is the cross product of two of its edges. */
+		a = x2 - x1;
+		b = y2 - y1;
+		c = z2 - z1;
+
+		d = x3 - x1;
+		e = y3 - y1;
+		f = z3 - z1;
+
+		
+		glBegin(GL_TRIANGLES);
+		glNormal3d(b*f - c*e, c*d - a*f, a*e - b*d);
+		if (ty == 1){
+			glTexCoord2d(texRatio, 1.0);	glVertex3d(x1, y1, z1);
+			glTexCoord2d(texRatio, 0.0);	glVertex3d(x2, y2, z2);
+			glTexCoord2d(texRatio+unitRatio, 1.0);	glVertex3d(x3, y3, z3);
+		}
+		else {
+			glTexCoord2d(texRatio, 1.0);	glVertex3d(x1, y1, z1);
+			glTexCoord2d(texRatio-unitRatio, 0.0);	glVertex3d(x2, y2, z2);
+			glTexCoord2d(texRatio, 0.0);	glVertex3d(x3, y3, z3);
+		}
+		glEnd();
+	}
+}
+
+void drawPartialCylinderTexture(GLdouble h, GLdouble r1, GLdouble r2, GLdouble startAngle, GLdouble endAngle){
+	ModelerDrawState *mds = ModelerDrawState::Instance();
+	int divisions;
+	startAngle *= 3.1415926 / 180.0;
+	endAngle *= 3.1415926 / 180.0;
+
+	_setupOpenGl();
+
+	if (!texName)TextureInit();
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, texName);
+
+	switch (mds->m_quality)
+	{
+	case HIGH:
+		divisions = 32; break;
+	case MEDIUM:
+		divisions = 20; break;
+	case LOW:
+		divisions = 12; break;
+	case POOR:
+		divisions = 8; break;
+	}
+
+	if (mds->m_rayFile)
+	{
+		_dump_current_modelview();
+		fprintf(mds->m_rayFile,
+			"cone { height=%f; bottom_radius=%f; top_radius=%f;\n", h, r1, r2);
+		_dump_current_material();
+		fprintf(mds->m_rayFile, "})\n");
+	}
+	else
+	{
+		divisions *= 3;
+		GLdouble rangeAngle = endAngle - startAngle;
+		GLdouble upthis[2], uplast[2], downthis[2], downlast[2];
+		upthis[0] = r1*cos(startAngle);
+		upthis[1] = r1*sin(startAngle);
+		downthis[0] = r2*cos(startAngle);
+		downthis[1] = r2*sin(startAngle);
+		for (int i = 1; i <= divisions; i++){
+			GLdouble curAngle = (rangeAngle / divisions)*i + startAngle;
+			uplast[0] = upthis[0];
+			uplast[1] = upthis[1];
+			downlast[0] = downthis[0];
+			downlast[1] = downthis[1];
+			upthis[0] = r1*cos(curAngle);
+			upthis[1] = r1*sin(curAngle);
+			downthis[0] = r2*cos(curAngle);
+			downthis[1] = r2*sin(curAngle);
+			drawTriangleTexture(uplast[0], uplast[1], 0.0, downlast[0], downlast[1], h, upthis[0], upthis[1], 0.0, (double)i / divisions,1.0/divisions, 1);
+			drawTriangleTexture(upthis[0], upthis[1], 0.0, downlast[0], downlast[1], h, downthis[0], downthis[1], h, (double)(i+1) / divisions,1.0/divisions,2 );
+		}
+
+
+	}
+
+	glDisable(GL_TEXTURE_2D);
 }
 
 void drawPartialTorso(GLdouble h, GLdouble r1, GLdouble r2, GLdouble rm,GLdouble mratio,GLdouble startAngle, GLdouble endAngle){
@@ -946,6 +1076,7 @@ void drawSwordGuard(){
 ModelNode::ModelNode(){
 	childHead = brotherNext = NULL;
 	disabled = false;
+	texAvailable = false;
 }
 void ModelNode::nodeCreate(ModelNode *father, int thePrimitiveType){
 	primitiveType = thePrimitiveType;
@@ -1019,6 +1150,15 @@ void ModelNode::enableNode(){
 void ModelNode::disableNode(){
 	disabled = true;
 }
+
+void ModelNode::enableTexture(){
+	texAvailable = true;
+}
+
+void ModelNode::disableTexture(){
+	texAvailable = false;
+}
+
 void ModelNode::Render(){
 	if (disabled)return;
 	setAmbientColor(.1f, .1f, .1f);
@@ -1085,7 +1225,10 @@ void ModelNode::Render(){
 		glRotated(90.0, 1.0, 0.0, 0.0);
 		glTranslated(transX, transZ, transY);
 		glScaled(xScale, zScale, yScale / abs(yScale));
-		drawPartialCylinder(abs(yScale), 1.0, upperScale,startAngle,endAngle);
+		if (texAvailable){
+			drawPartialCylinderTexture(abs(yScale), 1.0, upperScale, startAngle, endAngle);
+		}
+		else drawPartialCylinder(abs(yScale), 1.0, upperScale, startAngle, endAngle);
 		break;
 	case SHAPE_FOOT:
 		glTranslated(transX, transY, transZ);
@@ -1157,6 +1300,8 @@ void SaberModel::InitializeTree(){
 	animation = 0;
 	step = 0;
 	redLight = false;
+
+	
 }
 
 void SaberModel::CostumeSaber(){
@@ -1361,6 +1506,7 @@ void SaberModel::CostumeSaber(){
 	lowerFront[0].setTrans(0.0, 0.0, 0.0);
 	lowerFront[0].cylinderScale(3.5, 1.0, 0.5);
 	lowerFront[0].setStartAndEndAngle(250, 290);
+	lowerFront[0].enableTexture();
 	
 	lowerFront[1].disableNode();
 
@@ -1597,6 +1743,7 @@ void SaberModel::CostumeSaberLily(){
 	lowerFront[0].setTrans(0.0, 0.0, 0.0);
 	lowerFront[0].cylinderScale(2.4, 1.0, 0.5);
 	lowerFront[0].setStartAndEndAngle(250, 265);
+	lowerFront[0].disableTexture();
 
 	lowerFront[1].setAngle(0.0, 0.0, 0.0);
 	lowerFront[1].setColor(USE_COLOR_BLACK);
