@@ -68,6 +68,46 @@ void SaberModel::draw()
 				//break;
 			}
 			break;
+		case STAND:
+			if (step <= STEPMAX)
+			{
+				double angle = step / double(STEPMAX) * 60;
+
+				RotateExcalibur(angle>75 ? -angle * 2 + 25 : -angle*125.0 / 75.0, 0.0, angle < 40.0 ? angle : 40.0, "xyz");
+				RotateRightUpperArm(1.1*angle, 0.0, 0.0);
+				RotateRightLowerArm(0.6*angle, 0.0, angle < 40.0 ? -angle : -40.0, "zxy");
+				RotateLeftUpperArm(1.1*angle, 0.0, 0.0);
+				RotateLeftLowerArm(0.6*angle, 0.0, angle < 40.0 ? angle : 40.0, "zxy");
+				step+=2;
+			}
+			else if (step <= 1.5 * STEPMAX)
+			{
+				int temp = 1.5 * STEPMAX - step;
+				temp = temp * 2.0;
+				double angle = temp / double(STEPMAX) * 20 + 40;
+
+				RotateExcalibur(angle>75 ? -angle * 2 + 25 : -angle*125.0 / 75.0, 0.0, angle < 40.0 ? angle : 40.0, "xyz");
+				RotateRightUpperArm(1.1*angle, 0.0, 0.0);
+				RotateRightLowerArm(0.6*angle, 0.0, angle < 40.0 ? -angle : -40.0, "zxy");
+				RotateLeftUpperArm(1.1*angle, 0.0, 0.0);
+				RotateLeftLowerArm(0.6*angle, 0.0, angle < 40.0 ? angle : 40.0, "zxy");
+				step +=3;
+			}
+			else if (step <= 3.0*STEPMAX){
+				double angle = 40.0;
+
+				RotateExcalibur(angle>75 ? -angle * 2 + 25 : -angle*125.0 / 75.0, 0.0, angle < 40.0 ? angle : 40.0, "xyz");
+				RotateRightUpperArm(1.1*angle, 0.0, 0.0);
+				RotateRightLowerArm(0.6*angle, 0.0, angle < 40.0 ? -angle : -40.0, "zxy");
+				RotateLeftUpperArm(1.1*angle, 0.0, 0.0);
+				RotateLeftLowerArm(0.6*angle, 0.0, angle < 40.0 ? angle : 40.0, "zxy");
+				step++;
+			}
+			else {
+				step = 0;
+				//break;
+			}
+			break;
 		case SKEW:
 			
 			if (step <= STEPMAX)
@@ -163,6 +203,13 @@ void SaberModel::draw()
 			RotateRightLowerArm(LOWER_ARM_SLASH*VAL(SLASH), 0.0, LOWER_ARM_SLASH*VAL(SLASH) < 40.0 ? -LOWER_ARM_SLASH*VAL(SLASH) : -40.0, "zxy");
 			RotateLeftUpperArm(1.5*VAL(SLASH), 0.0, 0.0);
 			RotateLeftLowerArm(LOWER_ARM_SLASH*VAL(SLASH), 0.0, LOWER_ARM_SLASH*VAL(SLASH) < 40.0 ? LOWER_ARM_SLASH*VAL(SLASH) : 40.0, "zxy");
+			break;
+		case STAND:
+			RotateExcalibur(VAL(SLASH)>75?-VAL(SLASH)*2+25:-VAL(SLASH)*125.0/75.0, 0.0,VAL(SLASH) < 40.0 ? VAL(SLASH) : 40.0 , "xyz");
+			RotateRightUpperArm(1.1*VAL(SLASH), 0.0, 0.0);
+			RotateRightLowerArm(0.6*VAL(SLASH), 0.0, VAL(SLASH) < 40.0 ? -VAL(SLASH) : -40.0, "zxy");
+			RotateLeftUpperArm(1.1*VAL(SLASH), 0.0, 0.0);
+			RotateLeftLowerArm(0.6*VAL(SLASH), 0.0, VAL(SLASH) < 40.0 ? VAL(SLASH) : 40.0, "zxy");
 			break;
 		case SKEW:
 			if (VAL(SLASH) < 45.0){

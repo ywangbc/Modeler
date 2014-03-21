@@ -69,6 +69,7 @@ enum{
 
 enum{
 	VERTICAL = 1,
+	STAND,
 	SKEW,
 	SINGLE,
 	SLASH_TYPE_NUM
