@@ -278,7 +278,7 @@ Fl_Menu_Item ModelerUserInterface::menu_m_controlsMenuBar[] = {
  {0}
 };
 // 11-01-2001: fixed bug that caused animation problems
-Fl_Menu_Item* ModelerUserInterface::m_controlsAnimOnMenu = ModelerUserInterface::menu_m_controlsMenuBar + 18;
+Fl_Menu_Item* ModelerUserInterface::m_controlsAnimOnMenu = ModelerUserInterface::menu_m_controlsMenuBar + 19;
 
 inline void ModelerUserInterface::cb_m_controlsBrowser_i(Fl_Browser*, void*) {
   for (int i=0; i<ModelerApplication::Instance()->m_numControls; i++) {
@@ -372,3 +372,12 @@ void ModelerUserInterface::cb_Red(Fl_Menu_* o , void* v)
 	((ModelerUserInterface*)(o->parent()->user_data()))->cb_Red_i(o, v);
 }
 
+inline void ModelerUserInterface::cb_Twist_i(Fl_Menu_* o, void* v)
+{
+	bool temp = m_modelerView->m_camera->twist;
+	m_modelerView->m_camera->twist = temp ? false : true;
+}
+void ModelerUserInterface::cb_Twist(Fl_Menu_* o, void* v)
+{
+	((ModelerUserInterface*)(o->parent()->user_data()))->cb_Twist_i(o, v);
+}

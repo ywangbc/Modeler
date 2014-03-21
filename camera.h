@@ -37,6 +37,8 @@ public:
     
     // defaults to (0,0,0) facing down negative z axis
     Camera();
+
+	bool twist;
     
     //---[ Settings ]--------------------------------------
     

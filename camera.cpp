@@ -106,7 +106,7 @@ Camera::Camera()
 	mDolly = -20.0f;
 	mElevation = 0.2f;
 	mAzimuth = (float)M_PI;
-
+	twist = false;
 	mLookAt = Vec3f( 0, 0, 0 );
 	mCurrentMouseAction = kActionNone;
 
@@ -161,6 +161,15 @@ void Camera::dragMouse( int x, int y )
 		}
 	case kActionTwist:
 		// Not implemented
+		{
+			float dAzimuth = -mouseDelta[0] * kMouseRotationSensitivity;
+			float dElevation = mouseDelta[1] * kMouseRotationSensitivity;
+
+			setAzimuth(getAzimuth() + dAzimuth);
+			setElevation(getElevation() + dElevation);
+
+			break;
+		}
 	default:
 		break;
 	}
@@ -201,7 +210,12 @@ void Camera::lookAt(Vec3f eye, Vec3f at, Vec3f up)
 	Vec3f up1 = vectNorm(up);
 
 	Vec3f S = vectCross(f, up1);
-	Vec3f s = vectNorm(S);
+	Vec3f s;
+	if (!twist)
+	{
+		 s = vectNorm(S);
+	}
+	
 
 	printf("S %f %f %f\n", &S[0], &S[1], &S[2]);
 	printf("S %f %f %f\n", &s[0], &s[1], &s[2]);
