@@ -1099,6 +1099,7 @@ void SaberModel::InitializeTree(){
 
 	animation = 0;
 	step = 0;
+	redLight = false;
 }
 
 void SaberModel::CostumeSaber(){

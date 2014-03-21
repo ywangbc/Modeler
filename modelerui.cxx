@@ -260,6 +260,7 @@ Fl_Menu_Item ModelerUserInterface::menu_m_controlsMenuBar[] = {
  {"Exit", 0,  (Fl_Callback*)ModelerUserInterface::cb_Exit, 0, 0, 0, 0, 14, 0},
  {0},
  {"View", 0,  0, 0, 64, 0, 0, 14, 0},
+ 
  {"Normal", 0,  (Fl_Callback*)ModelerUserInterface::cb_Normal, 0, 12, 0, 0, 14, 0},
  {"Flat Shaded", 0,  (Fl_Callback*)ModelerUserInterface::cb_Flat, 0, 8, 0, 0, 14, 0},
  {"Wireframe", 0,  (Fl_Callback*)ModelerUserInterface::cb_Wireframe, 0, 136, 0, 0, 14, 0},
@@ -268,9 +269,11 @@ Fl_Menu_Item ModelerUserInterface::menu_m_controlsMenuBar[] = {
  {"Low Quality", 0,  (Fl_Callback*)ModelerUserInterface::cb_Low, 0, 8, 0, 0, 14, 0},
  {"Poor Quality", 0,  (Fl_Callback*)ModelerUserInterface::cb_Poor, 0, 136, 0, 0, 14, 0},
  {"Focus on Origin", 0,  (Fl_Callback*)ModelerUserInterface::cb_Focus, 0, 0, 0, 0, 14, 0},
+ { "Frame All", 0, (Fl_Callback*)ModelerUserInterface::cb_Frame, 0, 136, 0, 0, 14, 0 },
  {0},
  {"Animate", 0,  0, 0, 64, 0, 0, 14, 0},
  {"Enable", 0,  (Fl_Callback*)ModelerUserInterface::cb_m_controlsAnimOnMenu, 0, 2, 0, 0, 14, 0},
+ { "RedLight", 0, (Fl_Callback*)ModelerUserInterface::cb_Red, 0, 0, 0, 0, 14, 0 },
  {0},
  {0}
 };
@@ -337,3 +340,35 @@ void ModelerUserInterface::show() {
 m_modelerWindow->show();
 m_modelerView->show();
 }
+
+
+inline void ModelerUserInterface::cb_Frame_i(Fl_Menu_* o, void* v)
+{
+	Vec3f origin=Vec3f(0, 0, 0);
+	m_modelerView->m_camera->setLookAt(origin);
+	m_modelerView->m_camera->setDolly(30.0f);
+	m_modelerView->redraw();
+
+}
+void ModelerUserInterface::cb_Frame(Fl_Menu_* o, void* v)
+{
+	((ModelerUserInterface*)(o->parent()->user_data()))->cb_Frame_i(o, v);
+}
+
+inline void ModelerUserInterface::cb_Red_i(Fl_Menu_*, void*)
+{
+	if (m_modelerView->redLight)
+	{
+		m_modelerView->redLight = false;
+	}
+	else
+	{
+		m_modelerView->redLight = true;
+	}
+	m_modelerView->redraw();
+}
+void ModelerUserInterface::cb_Red(Fl_Menu_* o , void* v)
+{
+	((ModelerUserInterface*)(o->parent()->user_data()))->cb_Red_i(o, v);
+}
+
