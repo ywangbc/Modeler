@@ -25,6 +25,9 @@ public:
     virtual void draw();
 
     Camera *m_camera;
+
+	bool animation;
+	int step;
 };
 
 

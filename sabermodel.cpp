@@ -1072,6 +1072,9 @@ void SaberModel::InitializeTree(){
 	lowerOuter[4].nodeCreate(&lowerTorso, SHAPE_PARTIAL_CYLINDER);
 	lowerOuter[5].nodeCreate(&lowerTorso, SHAPE_PARTIAL_CYLINDER);
 	treeRoot = &upperTorso;
+
+	animation = 0;
+	step = 0;
 }
 
 void SaberModel::CostumeSaber(){

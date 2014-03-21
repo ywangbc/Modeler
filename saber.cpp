@@ -21,16 +21,56 @@ void SaberModel::draw()
 
 	ChooseCostume(VAL(COSTUME));
 
-	LocateBody(VAL(XPOS), VAL(YPOS), VAL(ZPOS), VAL(ROTATE));
-	setExcaliburTransparency(VAL(SWORD_TRANSPARENCY));
-	RotateExcalibur(0.0, 90.0, LOWER_ARM_SLASH*VAL(SLASH)<40.0 ? LOWER_ARM_SLASH*VAL(SLASH) : 40.0, "yzx");
-	RotateRightUpperArm(1.5*VAL(SLASH), 0.0, 0.0);
-	RotateRightLowerArm(LOWER_ARM_SLASH*VAL(SLASH), 0.0, LOWER_ARM_SLASH*VAL(SLASH)<40.0 ? -LOWER_ARM_SLASH*VAL(SLASH) : -40.0, "zxy");
-	RotateLeftUpperArm(1.5*VAL(SLASH), 0.0, 0.0);
-	RotateLeftLowerArm(LOWER_ARM_SLASH*VAL(SLASH), 0.0, LOWER_ARM_SLASH*VAL(SLASH)<40.0 ? LOWER_ARM_SLASH*VAL(SLASH) : 40.0, "zxy");
+	if (animation)
+	{
 
+		LocateBody(VAL(XPOS), VAL(YPOS), VAL(ZPOS), VAL(ROTATE));
+		setExcaliburTransparency(VAL(SWORD_TRANSPARENCY));
+		
+		if (step <= STEPMAX)
+		{
+			double angle = step / double(STEPMAX) * 90;
+
+			RotateExcalibur(0.0, 90.0, LOWER_ARM_SLASH*angle<40.0 ? LOWER_ARM_SLASH*angle : 40.0, "yzx");
+			RotateRightUpperArm(1.5*angle, 0.0, 0.0);
+			RotateRightLowerArm(LOWER_ARM_SLASH*angle, 0.0, LOWER_ARM_SLASH*angle<40.0 ? -LOWER_ARM_SLASH*angle : -40.0, "zxy");
+			RotateLeftUpperArm(1.5*angle, 0.0, 0.0);
+			RotateLeftLowerArm(LOWER_ARM_SLASH*angle, 0.0, LOWER_ARM_SLASH*angle<40.0 ? LOWER_ARM_SLASH*angle : 40.0, "zxy");
+			step++;
+		}
+		else if (step <= 1.2 * STEPMAX)
+		{
+			int temp = 1.2 * STEPMAX - step;
+			temp = temp * 5;
+			double angle = temp / double(STEPMAX) * 90;
+
+			RotateExcalibur(0.0, 90.0, LOWER_ARM_SLASH*angle<40.0 ? LOWER_ARM_SLASH*angle : 40.0, "yzx");
+			RotateRightUpperArm(1.5*angle, 0.0, 0.0);
+			RotateRightLowerArm(LOWER_ARM_SLASH*angle, 0.0, LOWER_ARM_SLASH*angle<40.0 ? -LOWER_ARM_SLASH*angle : -40.0, "zxy");
+			RotateLeftUpperArm(1.5*angle, 0.0, 0.0);
+			RotateLeftLowerArm(LOWER_ARM_SLASH*angle, 0.0, LOWER_ARM_SLASH*angle<40.0 ? LOWER_ARM_SLASH*angle : 40.0, "zxy");
+			step++;
+		}
+		else
+		{
+			animation = false;
+			step = 0;
+			//break;
+		}
+		//}
+	}
+	else
+	{
+		LocateBody(VAL(XPOS), VAL(YPOS), VAL(ZPOS), VAL(ROTATE));
+		setExcaliburTransparency(VAL(SWORD_TRANSPARENCY));
+		RotateExcalibur(0.0, 90.0, LOWER_ARM_SLASH*VAL(SLASH)<40.0 ? LOWER_ARM_SLASH*VAL(SLASH) : 40.0, "yzx");
+		RotateRightUpperArm(1.5*VAL(SLASH), 0.0, 0.0);
+		RotateRightLowerArm(LOWER_ARM_SLASH*VAL(SLASH), 0.0, LOWER_ARM_SLASH*VAL(SLASH)<40.0 ? -LOWER_ARM_SLASH*VAL(SLASH) : -40.0, "zxy");
+		RotateLeftUpperArm(1.5*VAL(SLASH), 0.0, 0.0);
+		RotateLeftLowerArm(LOWER_ARM_SLASH*VAL(SLASH), 0.0, LOWER_ARM_SLASH*VAL(SLASH)<40.0 ? LOWER_ARM_SLASH*VAL(SLASH) : 40.0, "zxy");
+	}
 	treeRoot->Render();
-	
+
 }
 
 int main()
