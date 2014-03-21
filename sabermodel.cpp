@@ -470,6 +470,52 @@ void drawPartialTorso(GLdouble h, GLdouble r1, GLdouble r2, GLdouble rm,GLdouble
 
 }
 
+void drawTorus(GLdouble r1, GLdouble r2){
+	ModelerDrawState *mds = ModelerDrawState::Instance();
+	int divisions;
+
+	_setupOpenGl();
+
+	switch (mds->m_quality)
+	{
+	case HIGH:
+		divisions = 32; break;
+	case MEDIUM:
+		divisions = 20; break;
+	case LOW:
+		divisions = 12; break;
+	case POOR:
+		divisions = 8; break;
+	}
+
+	if (mds->m_rayFile)
+	{
+		_dump_current_modelview();
+		fprintf(mds->m_rayFile,
+			"cone { bottom_radius=%f; top_radius=%f;\n", r1, r2);
+		_dump_current_material();
+		fprintf(mds->m_rayFile, "})\n");
+	}
+	else
+	{
+		divisions *= 5;
+		
+		for (int i = 0; i < divisions; i++){
+			GLdouble curAngle = 3.1415926 * 2.0 / divisions * i;
+			GLdouble curOx, curOz;
+			curOx = r1 * cos(curAngle);
+			curOz = r1 * sin(curAngle);
+			
+			glPushMatrix();
+			glTranslated(curOx, 0.0, curOz);
+			glRotated(-curAngle / 3.1415926*180.0, 0.0, 1.0, 0.0);
+			drawCylinderWithoutDisk(3.1415926 * 2.0 / divisions * (r1+r2)*1.02 , r2, r2);
+			glPopMatrix();
+		}
+
+	}
+}
+
 void drawBlade(int swordType){
 	if(swordType==TYPE_EXCALIBUR_MORGAN)setDiffuseColor(USE_COLOR_DARK);
 	else setDiffuseColor(USE_COLOR_EXCALIBUR);
@@ -596,7 +642,7 @@ void drawBlade(int swordType){
 	drawTriangle(8.0, 18.0, -1.0, 13.5, 0.0, 0.0, 8.0, 0.0, -1.0);
 }
 
-void drawFoot(){
+void drawFoot(int t){
 	glPushMatrix();
 	glScaled(1.0, 1.5, 1.0);
 	drawPartialCylinder(1.5, 0.4, 0, 0, 180);
@@ -606,6 +652,13 @@ void drawFoot(){
 	glRotated(-90.0, 1.0, 0.0, 0.0);
 	drawTorso(1.5, 0.52, 0.35, 0.4, 0.4);
 	glPopMatrix();
+	if (t){
+		glPushMatrix();
+		glTranslated(0.0, 0.4, -0.17);
+		glRotated(-30.0, 1.0, 0.0, 0.0);
+		drawTorus(0.5, 0.2);
+		glPopMatrix();
+	}
 }
 
 void drawEye(int li,int ty){
@@ -952,6 +1005,10 @@ void ModelNode::setHeadType(int ty){
 	headType = ty;
 }
 
+void ModelNode::setTorus(int t){
+	haveTorus = t;
+}
+
 void ModelNode::setStartAndEndAngle(GLdouble theStartAngle, GLdouble theEndAngle){
 	startAngle = theStartAngle;
 	endAngle = theEndAngle;
@@ -1033,7 +1090,7 @@ void ModelNode::Render(){
 	case SHAPE_FOOT:
 		glTranslated(transX, transY, transZ);
 		glScaled(xScale, yScale, zScale);
-		drawFoot();
+		drawFoot(haveTorus);
 		break;
 	case SHAPE_HEAD:
 		glTranslated(transX, transY, transZ);
@@ -1610,6 +1667,19 @@ void SaberModel::ChooseCostume(int cost){
 	case COSTUME_SABER_LILY:
 		CostumeSaberLily();
 		break;
+	}
+}
+
+void SaberModel::setComplexity(int comp){
+	if (comp) {
+		head.enableNode();
+		leftFoot.setTorus(1);
+		rightFoot.setTorus(1);
+	}
+	else {
+		head.disableNode();
+		rightFoot.setTorus(0);
+		leftFoot.setTorus(0);
 	}
 }
 

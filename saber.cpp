@@ -30,6 +30,7 @@ void SaberModel::draw()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	ChooseCostume(VAL(COSTUME));
+	setComplexity(VAL(COMPLEXITY));
 
 	if (animation)
 	{
@@ -272,6 +273,7 @@ int main()
 	controls[SLASH] = ModelerControl("Slash", 0, 90, 1, 0);
 	controls[COSTUME] = ModelerControl("Costume", 1, 3, 1, 1);
 	controls[SLASH_TYPE] = ModelerControl("Slash Type", 1, SLASH_TYPE_NUM-1, 1, 1);
+	controls[COMPLEXITY] = ModelerControl("Complexity", 0, 1, 1, 0);
 
 	ModelerApplication::Instance()->Init(&createSaberModel, controls, NUMCONTROLS);
 	return ModelerApplication::Instance()->Run();
