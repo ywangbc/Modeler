@@ -670,7 +670,7 @@ void drawHair(GLdouble mp,GLdouble ep){
 }
 
 #define UP_LINE_HEIGHT(x) (x*x/5.0)
-#define LOW_LINE_HEIGHT(x) (x*x/10.0*1.3)
+#define LOW_LINE_HEIGHT(x) (x*x/10.0)*0.3
 #define FACE_START_POINT 0.5
 #define FACE_INDENT 0.2
 #define FACE_BOTTOM 0.0, -0.05, 0.6
@@ -729,7 +729,7 @@ void drawHead(int ty){
 	upthis[0]=0.0;
 	upthis[1] =  upidZ+ 0.2;
 	lowthis[0] = 0.0;
-	lowthis[1] = lowidZ +0.13;
+	lowthis[1] = lowidZ+0.03 ;
 	for (int i = 1; i <= divisions; i++){
 		uplast[0] = upthis[0];
 		uplast[1] = upthis[1];
@@ -738,7 +738,7 @@ void drawHead(int ty){
 		upthis[0] = (cos(FACE_START_POINT) - FACE_INDENT) / divisions*i;
 		upthis[1] = upidZ + 0.2 - UP_LINE_HEIGHT(upthis[0] / (cos(FACE_START_POINT) - FACE_INDENT));
 		lowthis[0] = (LOWER_RADIUS*cos(FACE_START_POINT) - FACE_INDENT) / divisions*i;
-		lowthis[1] = lowidZ + 0.13 - LOW_LINE_HEIGHT(lowthis[0] / (LOWER_RADIUS*cos(FACE_START_POINT) - FACE_INDENT));
+		lowthis[1] = lowidZ  +0.03 - LOW_LINE_HEIGHT(lowthis[0] / (LOWER_RADIUS*cos(FACE_START_POINT) - FACE_INDENT));
 
 		if (ty != COSTUME_SABER_ALTER)setDiffuseColor(USE_COLOR_BODY);
 		else setDiffuseColor(USE_COLOR_PALE);
@@ -760,14 +760,14 @@ void drawHead(int ty){
 			if (ty != COSTUME_SABER_ALTER)setDiffuseColor(USE_COLOR_HAIR_GOLD);
 			else setDiffuseColor(USE_COLOR_HAIR_DARK_GOLD);
 			glPushMatrix();
-			glTranslated(upthis[0], 1.0, upthis[1]+0.02);
+			glTranslated(upthis[0], 1.05, upthis[1]+0.02);
 			glScaled(-0.15, 0.4, 0.0);
 			drawHair(mp, ep);
 			glPopMatrix();
 			mp = (double)rand() / RAND_MAX *2.0 - 1.0;
 			ep = (double)rand() / RAND_MAX *4.0 - 2.0;
 			glPushMatrix();
-			glTranslated(-upthis[0], 1.0, upthis[1] + 0.02);
+			glTranslated(-upthis[0], 1.05, upthis[1] + 0.02);
 			glScaled(-0.1, 0.4, 0.1);
 			drawHair(mp, ep);
 			glPopMatrix();
@@ -788,7 +788,7 @@ void drawHead(int ty){
 		curZ = sin(curAngle);
 		GLdouble rotY = (-curAngle*180.0 / 3.14159 + 90.0);
 		glPushMatrix();
-		glTranslated(curX*1.05, 1.0, curZ*1.05);
+		glTranslated(curX*1.05, 1.05, curZ*1.05);
 		glRotated(rotY, 0.0, 1.0, 0.0);
 		if(curZ<0.3&&curZ>esp)glScaled(-0.15, 1.2, 0.1);
 		else glScaled(-0.1, 0.8, 0.1);
@@ -799,7 +799,7 @@ void drawHead(int ty){
 	}
 
 	glPushMatrix();
-	glTranslated(-0.23, 0.5, 0.9);
+	glTranslated(-0.23, 0.5, 0.87);
 	glRotated(10.0, 1.0, 0.0, 0.0);
 	glRotated(-10.0,0.0, 1.0, 0.0);
 	glScaled(0.04, 0.03, 1.0);
@@ -807,7 +807,7 @@ void drawHead(int ty){
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslated(0.23, 0.5, 0.9);
+	glTranslated(0.23, 0.5, 0.87);
 	glRotated(10.0, 1.0, 0.0, 0.0);
 	glRotated(10.0, 0.0, 1.0, 0.0);
 	glScaled(0.04, 0.03, 1.0);
@@ -815,13 +815,14 @@ void drawHead(int ty){
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslated(0.0, 0.3, 0.82);
+	glTranslated(0.0, 0.3, 0.77);
 	glScaled(0.07, 0.05, 0.1);
+	glRotated(10.0, 1.0, 0.0, 0.0);
 	drawNose();
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslated(0.0, 0.2, 0.8);
+	glTranslated(0.0, 0.2, 0.67);
 	glScaled(0.05, 0.01, 0.05);
 	drawMouth();
 	glPopMatrix();
@@ -1172,7 +1173,7 @@ void SaberModel::CostumeSaber(){
 
 	head.setAngle(0.0, 180.0, 0.0);
 	head.setColor(USE_COLOR_BODY);
-	head.setScale(0.8, 1.5, 0.8);
+	head.setScale(0.8, 1.4, 0.8);
 	head.setStartPos(0.0, 0.0, 0.0);
 	head.setTrans(0.0, 0.1, 0.0);
 	head.setHeadType(COSTUME_SABER);
