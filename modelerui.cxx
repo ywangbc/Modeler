@@ -241,6 +241,11 @@ void ModelerUserInterface::cb_Focus(Fl_Menu_* o, void* v) {
 
 inline void ModelerUserInterface::cb_m_controlsAnimOnMenu_i(Fl_Menu_*, void*) {
   ModelerApplication::Instance()->m_animating = (m_controlsAnimOnMenu->value() == 0) ? false : true;
+  if (ModelerApplication::Instance()->m_animating)
+  {
+	  m_modelerView->animation = true;
+  }
+  
 }
 void ModelerUserInterface::cb_m_controlsAnimOnMenu(Fl_Menu_* o, void* v) {
   ((ModelerUserInterface*)(o->parent()->user_data()))->cb_m_controlsAnimOnMenu_i(o,v);

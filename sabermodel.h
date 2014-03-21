@@ -35,6 +35,7 @@ using namespace std;
 #define USE_COLOR_PALE 244.0/255.0, 236.0/255.0, 246.0/255.0
 
 const double esp = 1e-6;
+const int STEPMAX = 100;
 enum{
 	PRIMITIVE_BOX = 1,
 	PRIMITIVE_SPHERE,
