@@ -25,50 +25,178 @@ void SaberModel::draw()
 	{
 
 		LocateBody(VAL(XPOS), VAL(YPOS), VAL(ZPOS), VAL(ROTATE));
-		setExcaliburTransparency(VAL(SWORD_TRANSPARENCY));
 		
-		if (step <= STEPMAX)
-		{
-			double angle = step / double(STEPMAX) * 90;
+		int SType = VAL(SLASH_TYPE);
+		switch (SType){
+		case VERTICAL:
+			if (step <= STEPMAX)
+			{
+				double angle = step / double(STEPMAX) * 90;
 
-			RotateExcalibur(0.0, 90.0, LOWER_ARM_SLASH*angle<40.0 ? LOWER_ARM_SLASH*angle : 40.0, "yzx");
-			RotateRightUpperArm(1.5*angle, 0.0, 0.0);
-			RotateRightLowerArm(LOWER_ARM_SLASH*angle, 0.0, LOWER_ARM_SLASH*angle<40.0 ? -LOWER_ARM_SLASH*angle : -40.0, "zxy");
-			RotateLeftUpperArm(1.5*angle, 0.0, 0.0);
-			RotateLeftLowerArm(LOWER_ARM_SLASH*angle, 0.0, LOWER_ARM_SLASH*angle<40.0 ? LOWER_ARM_SLASH*angle : 40.0, "zxy");
-			step++;
-		}
-		else if (step <= 1.2 * STEPMAX)
-		{
-			int temp = 1.2 * STEPMAX - step;
-			temp = temp * 5;
-			double angle = temp / double(STEPMAX) * 90;
+				RotateExcalibur(0.0, 90.0, LOWER_ARM_SLASH*angle<40.0 ? LOWER_ARM_SLASH*angle : 40.0, "yzx");
+				RotateRightUpperArm(1.5*angle, 0.0, 0.0);
+				RotateRightLowerArm(LOWER_ARM_SLASH*angle, 0.0, LOWER_ARM_SLASH*angle<40.0 ? -LOWER_ARM_SLASH*angle : -40.0, "zxy");
+				RotateLeftUpperArm(1.5*angle, 0.0, 0.0);
+				RotateLeftLowerArm(LOWER_ARM_SLASH*angle, 0.0, LOWER_ARM_SLASH*angle<40.0 ? LOWER_ARM_SLASH*angle : 40.0, "zxy");
+				step++;
+			}
+			else if (step <= 1.5 * STEPMAX)
+			{
+				int temp = 1.5 * STEPMAX - step;
+				temp = temp * 2.0;
+				double angle = temp / double(STEPMAX) * 40 + 50;
 
-			RotateExcalibur(0.0, 90.0, LOWER_ARM_SLASH*angle<40.0 ? LOWER_ARM_SLASH*angle : 40.0, "yzx");
-			RotateRightUpperArm(1.5*angle, 0.0, 0.0);
-			RotateRightLowerArm(LOWER_ARM_SLASH*angle, 0.0, LOWER_ARM_SLASH*angle<40.0 ? -LOWER_ARM_SLASH*angle : -40.0, "zxy");
-			RotateLeftUpperArm(1.5*angle, 0.0, 0.0);
-			RotateLeftLowerArm(LOWER_ARM_SLASH*angle, 0.0, LOWER_ARM_SLASH*angle<40.0 ? LOWER_ARM_SLASH*angle : 40.0, "zxy");
-			step++;
+				RotateExcalibur(0.0, 90.0, LOWER_ARM_SLASH*angle<40.0 ? LOWER_ARM_SLASH*angle : 40.0, "yzx");
+				RotateRightUpperArm(1.5*angle, 0.0, 0.0);
+				RotateRightLowerArm(LOWER_ARM_SLASH*angle, 0.0, LOWER_ARM_SLASH*angle<40.0 ? -LOWER_ARM_SLASH*angle : -40.0, "zxy");
+				RotateLeftUpperArm(1.5*angle, 0.0, 0.0);
+				RotateLeftLowerArm(LOWER_ARM_SLASH*angle, 0.0, LOWER_ARM_SLASH*angle<40.0 ? LOWER_ARM_SLASH*angle : 40.0, "zxy");
+				step+=3;
+			}
+			else if (step <= 2.5*STEPMAX){
+				double angle = 50.0;
+
+				RotateExcalibur(0.0, 90.0, LOWER_ARM_SLASH*angle<40.0 ? LOWER_ARM_SLASH*angle : 40.0, "yzx");
+				RotateRightUpperArm(1.5*angle, 0.0, 0.0);
+				RotateRightLowerArm(LOWER_ARM_SLASH*angle, 0.0, LOWER_ARM_SLASH*angle<40.0 ? -LOWER_ARM_SLASH*angle : -40.0, "zxy");
+				RotateLeftUpperArm(1.5*angle, 0.0, 0.0);
+				RotateLeftLowerArm(LOWER_ARM_SLASH*angle, 0.0, LOWER_ARM_SLASH*angle<40.0 ? LOWER_ARM_SLASH*angle : 40.0, "zxy");
+				step++;
+			}
+			else {
+				step = 0;
+				//break;
+			}
+			break;
+		case SKEW:
+			
+			if (step <= STEPMAX)
+			{
+				double angle = step / double(STEPMAX) * 45;
+
+				RotateExcalibur(0.0, 0.0, 70.0 * angle / 45.0, "xyz");
+				RotateRightUpperArm(90.0*angle / 45.0, -30.0 * angle / 45.0, 0.0, "xyz");
+				RotateRightLowerArm(110.0*angle / 45.0, 30.0*angle / 45.0, 0.0, "xyz");
+				RotateLeftUpperArm(90.0*angle / 45.0, -45.0*angle / 45.0, 0.0, "xyz");
+				RotateLeftLowerArm(65.0*angle / 45.0, -15.0*angle / 45.0, 0.0, "xyz");
+				
+				step++;
+			}
+			else if (step <= 2.0 * STEPMAX)
+			{
+				int temp = step - STEPMAX;
+				double angle = temp / double(STEPMAX) * 45 + 45;
+
+				RotateExcalibur(0.0, 90.0*(angle - 45.0) / 45.0, 70.0 *(1 - (angle - 45.0) / 45.0), "xyz");
+				RotateRightUpperArm(90.0 - 30.0*(angle - 45.0) / 45.0, -30.0 + 55.0 * (angle - 45.0) / 45.0, 0.0, "xyz");
+				RotateRightLowerArm(110.0 - 110.0*(angle - 45.0) / 45.0, 30.0 - 30.0*(angle - 45.0) / 45.0, 0.0, "xyz");
+				RotateLeftUpperArm(90.0 - 40.0*(angle - 45.0) / 45.0, -45.0 + 30.0*(angle - 45.0) / 45.0, 0.0, "xyz");
+				RotateLeftLowerArm(65.0 - 50.0*(angle - 45.0) / 45.0, -15.0 + 15.0*(angle - 45.0) / 45.0, 10.0*(angle - 45.0) / 45.0, "xyz");
+
+				step += 5;
+			}
+			else if (step <= 3.0*STEPMAX){
+				double angle = 90.0;
+
+				RotateExcalibur(0.0, 90.0*(angle - 45.0) / 45.0, 70.0 *(1 - (angle - 45.0) / 45.0), "xyz");
+				RotateRightUpperArm(90.0 - 30.0*(angle - 45.0) / 45.0, -30.0 + 55.0 * (angle - 45.0) / 45.0, 0.0, "xyz");
+				RotateRightLowerArm(110.0 - 110.0*(angle - 45.0) / 45.0, 30.0 - 30.0*(angle - 45.0) / 45.0, 0.0, "xyz");
+				RotateLeftUpperArm(90.0 - 40.0*(angle - 45.0) / 45.0, -45.0 + 30.0*(angle - 45.0) / 45.0, 0.0, "xyz");
+				RotateLeftLowerArm(65.0 - 50.0*(angle - 45.0) / 45.0, -15.0 + 15.0*(angle - 45.0) / 45.0, 10.0*(angle - 45.0) / 45.0, "xyz");
+				step++;
+			}
+			else {
+				step = 0;
+				//break;
+			}
+			break;
+		case SINGLE:
+			if (step <= STEPMAX)
+			{
+				double angle = step / double(STEPMAX) * 45;
+
+				RotateExcalibur(0.0, 0.0, 70.0 * angle / 45.0, "xyz");
+				RotateRightUpperArm(90.0*angle / 45.0, -30.0 * angle / 45.0, 0.0, "xyz");
+				RotateRightLowerArm(110.0*angle / 45.0, 30.0*angle / 45.0, 0.0, "xyz");
+
+				step+=2;
+			}
+			else if (step <= 2.0 * STEPMAX)
+			{
+				int temp = step - STEPMAX;
+				double angle = temp / double(STEPMAX) * 45 + 45;
+
+
+				RotateExcalibur(0.0, -90.0*(angle - 45.0) / 45.0, 70.0 *(1 - (angle - 45.0) / 45.0), "xyz");
+				RotateRightUpperArm(90.0, -30.0 + 75.0 * (angle - 45.0) / 45.0, 0.0, "xyz");
+				RotateRightLowerArm(110.0 - 110.0*(angle - 45.0) / 45.0, 30.0 + 60.0*(angle - 45.0) / 45.0, 0.0, "xyz");
+
+				step += 4;
+			}
+			else if (step <= 2.4*STEPMAX){
+				double angle = 90.0;
+
+
+				RotateExcalibur(0.0, -90.0*(angle - 45.0) / 45.0, 70.0 *(1 - (angle - 45.0) / 45.0), "xyz");
+				RotateRightUpperArm(90.0, -30.0 + 75.0 * (angle - 45.0) / 45.0, 0.0, "xyz");
+				RotateRightLowerArm(110.0 - 110.0*(angle - 45.0) / 45.0, 30.0 + 60.0*(angle - 45.0) / 45.0, 0.0, "xyz");
+				step++;
+			}
+			else {
+				step = 0;
+				//break;
+			}
+			break;
 		}
-		else
-		{
-			animation = false;
-			step = 0;
-			//break;
-		}
+
+		
 		//}
 	}
 	else
 	{
 		LocateBody(VAL(XPOS), VAL(YPOS), VAL(ZPOS), VAL(ROTATE));
-		setExcaliburTransparency(VAL(SWORD_TRANSPARENCY));
-		RotateExcalibur(0.0, 90.0, LOWER_ARM_SLASH*VAL(SLASH)<40.0 ? LOWER_ARM_SLASH*VAL(SLASH) : 40.0, "yzx");
-		RotateRightUpperArm(1.5*VAL(SLASH), 0.0, 0.0);
-		RotateRightLowerArm(LOWER_ARM_SLASH*VAL(SLASH), 0.0, LOWER_ARM_SLASH*VAL(SLASH)<40.0 ? -LOWER_ARM_SLASH*VAL(SLASH) : -40.0, "zxy");
-		RotateLeftUpperArm(1.5*VAL(SLASH), 0.0, 0.0);
-		RotateLeftLowerArm(LOWER_ARM_SLASH*VAL(SLASH), 0.0, LOWER_ARM_SLASH*VAL(SLASH)<40.0 ? LOWER_ARM_SLASH*VAL(SLASH) : 40.0, "zxy");
+		int SType = VAL(SLASH_TYPE);
+		switch (SType){
+		case VERTICAL:
+			RotateExcalibur(0.0, 90.0, LOWER_ARM_SLASH*VAL(SLASH) < 40.0 ? LOWER_ARM_SLASH*VAL(SLASH) : 40.0, "yzx");
+			RotateRightUpperArm(1.5*VAL(SLASH), 0.0, 0.0);
+			RotateRightLowerArm(LOWER_ARM_SLASH*VAL(SLASH), 0.0, LOWER_ARM_SLASH*VAL(SLASH) < 40.0 ? -LOWER_ARM_SLASH*VAL(SLASH) : -40.0, "zxy");
+			RotateLeftUpperArm(1.5*VAL(SLASH), 0.0, 0.0);
+			RotateLeftLowerArm(LOWER_ARM_SLASH*VAL(SLASH), 0.0, LOWER_ARM_SLASH*VAL(SLASH) < 40.0 ? LOWER_ARM_SLASH*VAL(SLASH) : 40.0, "zxy");
+			break;
+		case SKEW:
+			if (VAL(SLASH) < 45.0){
+				RotateExcalibur(0.0, 0.0, 70.0 * VAL(SLASH) / 45.0, "xyz");
+				RotateRightUpperArm(90.0*VAL(SLASH) / 45.0, -30.0 * VAL(SLASH) / 45.0, 0.0, "xyz");
+				RotateRightLowerArm(110.0*VAL(SLASH) / 45.0, 30.0*VAL(SLASH) / 45.0, 0.0, "xyz");
+				RotateLeftUpperArm(90.0*VAL(SLASH) / 45.0, -45.0*VAL(SLASH) / 45.0, 0.0, "xyz");
+				RotateLeftLowerArm(65.0*VAL(SLASH) / 45.0, -15.0*VAL(SLASH) / 45.0, 0.0, "xyz");
+			}
+			else{
+				RotateExcalibur(0.0, 90.0*(VAL(SLASH) - 45.0) / 45.0, 70.0 *(1 - (VAL(SLASH) - 45.0) / 45.0), "xyz");
+				RotateRightUpperArm(90.0 - 30.0*(VAL(SLASH) - 45.0) / 45.0, -30.0 + 55.0 * (VAL(SLASH) - 45.0) / 45.0, 0.0, "xyz");
+				RotateRightLowerArm(110.0 - 110.0*(VAL(SLASH) - 45.0) / 45.0, 30.0 - 30.0*(VAL(SLASH) - 45.0) / 45.0, 0.0, "xyz");
+				RotateLeftUpperArm(90.0 - 40.0*(VAL(SLASH) - 45.0) / 45.0, -45.0 + 30.0*(VAL(SLASH) - 45.0) / 45.0, 0.0, "xyz");
+				RotateLeftLowerArm(65.0 - 50.0*(VAL(SLASH) - 45.0) / 45.0, -15.0 + 15.0*(VAL(SLASH) - 45.0) / 45.0, 10.0*(VAL(SLASH) - 45.0) / 45.0, "xyz");
+				break;
+			}
+		case SINGLE:
+			if (VAL(SLASH) < 45.0){
+				RotateExcalibur(0.0, 0.0, 70.0 * VAL(SLASH) / 45.0, "xyz");
+				RotateRightUpperArm(90.0*VAL(SLASH) / 45.0, -30.0 * VAL(SLASH) / 45.0, 0.0, "xyz");
+				RotateRightLowerArm(110.0*VAL(SLASH) / 45.0, 30.0*VAL(SLASH) / 45.0, 0.0, "xyz");
+			}
+			else{
+				RotateExcalibur(0.0, -90.0*(VAL(SLASH) - 45.0) / 45.0, 70.0 *(1 - (VAL(SLASH) - 45.0) / 45.0), "xyz");
+				RotateRightUpperArm(90.0, -30.0 + 75.0 * (VAL(SLASH) - 45.0) / 45.0, 0.0, "xyz");
+				RotateRightLowerArm(110.0 - 110.0*(VAL(SLASH) - 45.0) / 45.0, 30.0 + 60.0*(VAL(SLASH) - 45.0) / 45.0, 0.0, "xyz");
+			}
+				break;
+		}
 	}
+		
+		
+		
 	treeRoot->Render();
 
 }
@@ -86,6 +214,7 @@ int main()
 	controls[ROTATE] = ModelerControl("Rotate", -180, 180, 1, 0);
 	controls[SLASH] = ModelerControl("Slash", 0, 90, 1, 0);
 	controls[COSTUME] = ModelerControl("Costume", 1, 3, 1, 1);
+	controls[SLASH_TYPE] = ModelerControl("Slash Type", 1, SLASH_TYPE_NUM-1, 1, 1);
 
 	ModelerApplication::Instance()->Init(&createSaberModel, controls, NUMCONTROLS);
 	return ModelerApplication::Instance()->Run();
